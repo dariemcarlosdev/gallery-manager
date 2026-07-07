@@ -5,11 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { ExhibitService } from '../../services/exhibit.service';
 import { Exhibit, ExhibitRevenue } from '../../models/exhibit.model';
 import { listItem, listStagger, panelReveal } from '../../shared/animations';
+import { GalleryCardComponent } from '../../shared/components/gallery-card/gallery-card.component';
 
 @Component({
   selector: 'app-exhibits-page',
   standalone: true,
-  imports: [FormsModule, CurrencyPipe],
+  imports: [FormsModule, CurrencyPipe, GalleryCardComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './exhibits-page.component.html',
   styleUrl: './exhibits-page.component.scss',

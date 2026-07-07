@@ -1,26 +1,40 @@
+// ─── DESIGN TOKENS ── Gallery Noir: Warm Analogous + Gilt Gold ───
+//
+// Color theory: analogous warm palette (amber → gold → bronze)
+// anchored by gilt-gold primary accent. Dark surfaces use warm
+// undertones for an intimate gallery atmosphere. Status colors
+// stay semantic and distinct from the accent family.
+
 :root {
-  --color-bg: #121113;
-  --color-surface: #1a1918;
-  --color-surface-raised: #221f1d;
-  --color-ink: #f5f1ea;
-  --color-ink-muted: #948d84;
-  --color-line: #322f2c;
+  // Surface hierarchy — warm dark tones
+  --color-bg: #0e0d0c;
+  --color-surface: #181614;
+  --color-surface-raised: #211e1a;
+  --color-surface-glass: rgba(24, 22, 20, 0.85);
+  --color-ink: #ede8e0;
+  --color-ink-muted: #8c857c;
+  --color-line: #2d2924;
+  --color-line-hover: #3d3830;
 
-  /* Red dot — the gallery convention for a sold piece, doubling as the one bright accent */
-  --color-accent: #ff3b30;
-  --color-accent-hover: #ff5c52;
-  --color-accent-tint: rgba(255, 59, 48, 0.14);
+  // Primary accent — gilt gold
+  --color-accent: #c9a96e;
+  --color-accent-hover: #d4b880;
+  --color-accent-tint: rgba(201, 169, 110, 0.12);
+  --color-accent-glow: rgba(201, 169, 110, 0.25);
 
-  --color-available: #34d399;
-  --color-available-tint: rgba(52, 211, 153, 0.14);
-  --color-onloan: #fbbf24;
-  --color-onloan-tint: rgba(251, 191, 36, 0.14);
-  --color-sold: var(--color-accent);
-  --color-sold-tint: var(--color-accent-tint);
+  // Status semantics
+  --color-available: #4ade80;
+  --color-available-tint: rgba(74, 222, 128, 0.12);
+  --color-onloan: #f0b429;
+  --color-onloan-tint: rgba(240, 180, 41, 0.12);
+  --color-sold: #e64848;
+  --color-sold-tint: rgba(230, 72, 72, 0.12);
 
+  // Typography
   --font-display: 'Fraunces', ui-serif, serif;
   --font-body: 'Work Sans', ui-sans-serif, system-ui, sans-serif;
 
+  // Spacing scale (4px base)
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -28,15 +42,32 @@
   --space-5: 24px;
   --space-6: 32px;
   --space-7: 48px;
+  --space-8: 64px;
 
-  --radius-sm: 4px;
-  --radius-md: 10px;
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.24), 0 6px 20px rgba(0, 0, 0, 0.3);
-  --shadow-card-hover: 0 4px 14px rgba(0, 0, 0, 0.32), 0 20px 40px rgba(0, 0, 0, 0.4);
+  // Radii
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  // Shadows (warm-tinted)
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2);
+  --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.35), 0 16px 48px rgba(0, 0, 0, 0.25);
+  --shadow-glow: 0 0 20px var(--color-accent-glow);
+
+  // Motion
   --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
 }
 
-* {
+// ─── RESET ───
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -51,9 +82,12 @@ body {
   color: var(--color-ink);
   font-family: var(--font-body);
   font-size: 16px;
-  line-height: 1.5;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+// ─── TYPOGRAPHY ───
 
 h1,
 h2,
@@ -67,25 +101,41 @@ h3 {
 }
 
 h1 {
-  font-size: 2rem;
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
   letter-spacing: -0.01em;
 }
 
-/* Museum wall-label style eyebrow — used for field labels & metadata */
+h3 {
+  font-size: 1.1rem;
+}
+
 .eyebrow {
   display: inline-block;
   font-family: var(--font-body);
   font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-ink-muted);
 }
+
+p {
+  margin: 0 0 var(--space-3);
+}
+
+// ─── FOCUS ───
 
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
+
+// ─── REDUCED MOTION ───
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -97,9 +147,14 @@ h1 {
   }
 }
 
-p {
-  margin: 0 0 var(--space-3);
+// ─── SELECTION ───
+
+::selection {
+  background: var(--color-accent-tint);
+  color: var(--color-accent);
 }
+
+// ─── INTERACTIVE ELEMENTS ───
 
 button {
   font-family: inherit;
@@ -108,21 +163,24 @@ button {
 }
 
 input,
-select {
+select,
+textarea {
   font-family: inherit;
   font-size: 1rem;
+  color: var(--color-ink);
 }
 
 a {
   color: var(--color-accent);
+  text-decoration: none;
+  transition: color var(--duration-fast) ease-out;
+
+  &:hover {
+    color: var(--color-accent-hover);
+  }
 }
 
-::selection {
-  background: var(--color-accent-tint);
-  color: var(--color-accent);
-}
-
-/* Shared across pages — small POC, not worth componentizing further */
+// ─── LAYOUT ───
 
 .page-head {
   margin-bottom: var(--space-6);
@@ -131,7 +189,10 @@ a {
 .page-head__sub {
   color: var(--color-ink-muted);
   margin: 0;
+  font-size: 0.95rem;
 }
+
+// ─── PANEL ───
 
 .panel {
   background: var(--color-surface);
@@ -140,7 +201,6 @@ a {
   padding: var(--space-5);
   margin-bottom: var(--space-5);
   box-shadow: var(--shadow-card);
-  transition: box-shadow 0.25s var(--ease-premium);
 }
 
 .panel__row {
@@ -149,65 +209,81 @@ a {
   justify-content: space-between;
   gap: var(--space-4);
   margin-bottom: var(--space-4);
+  flex-wrap: wrap;
 }
 
 .panel__row h2 {
   margin: 0;
 }
 
+// ─── BUTTONS ───
+
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-2);
   padding: var(--space-3) var(--space-5);
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
   font-weight: 500;
-  transition: background-color 0.15s ease-out, border-color 0.15s ease-out, transform 0.1s ease-out,
-    box-shadow 0.2s var(--ease-premium);
-}
+  font-size: 0.9rem;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition:
+    background-color var(--duration-fast) ease-out,
+    border-color var(--duration-fast) ease-out,
+    transform 0.1s ease-out,
+    box-shadow var(--duration-normal) var(--ease-premium);
 
-.btn:active {
-  transform: scale(0.98);
+  &:active {
+    transform: scale(0.97);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 }
 
 .btn--primary {
   background: var(--color-accent);
-  color: var(--color-surface);
-}
+  color: var(--color-bg);
+  font-weight: 600;
 
-.btn--primary:hover:not(:disabled) {
-  background: var(--color-accent-hover);
-  box-shadow: 0 4px 14px rgba(255, 59, 48, 0.3);
-}
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn--sm {
-  padding: var(--space-2) var(--space-3);
-  font-size: 0.85rem;
+  &:hover:not(:disabled) {
+    background: var(--color-accent-hover);
+    box-shadow: var(--shadow-glow);
+  }
 }
 
 .btn--ghost {
   background: var(--color-surface-raised);
   border-color: var(--color-line);
   color: var(--color-ink);
+
+  &:hover:not(:disabled) {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
 }
 
-.btn--ghost:hover:not(:disabled) {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+.btn--sm {
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.8rem;
 }
+
+// ─── BADGE (global fallback) ───
 
 .badge {
   display: inline-block;
   padding: var(--space-1) var(--space-3);
-  border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 500;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .badge--available {
@@ -225,6 +301,8 @@ a {
   color: var(--color-sold);
 }
 
+// ─── BANNER ───
+
 .banner {
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-sm);
@@ -233,12 +311,35 @@ a {
 }
 
 .banner--error {
-  background: var(--color-accent-tint);
-  color: var(--color-accent);
+  background: var(--color-sold-tint);
+  color: var(--color-sold);
+  border: 1px solid rgba(230, 72, 72, 0.2);
 }
+
+// ─── EMPTY STATE ───
 
 .empty-state {
   color: var(--color-ink-muted);
-  padding: var(--space-5) 0;
+  padding: var(--space-7) 0;
   text-align: center;
+  font-size: 0.95rem;
+}
+
+// ─── LOADING SHIMMER ───
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface) 25%,
+    var(--color-surface-raised) 50%,
+    var(--color-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
 }

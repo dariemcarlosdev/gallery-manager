@@ -5,13 +5,15 @@ import { FormsModule } from '@angular/forms';
 import { ArtworkService } from '../../services/artwork.service';
 import { Artwork, ArtworkStatus, CreateArtworkRequest } from '../../models/artwork.model';
 import { listItem, listStagger, panelReveal } from '../../shared/animations';
+import { GalleryCardComponent } from '../../shared/components/gallery-card/gallery-card.component';
+import { StatusBadgeComponent } from '../../shared/components/status-badge/status-badge.component';
 
 const EMPTY_DRAFT: CreateArtworkRequest = { title: '', artist: '', medium: '', price: 0 };
 
 @Component({
   selector: 'app-artworks-page',
   standalone: true,
-  imports: [FormsModule, CurrencyPipe],
+  imports: [FormsModule, CurrencyPipe, GalleryCardComponent, StatusBadgeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './artworks-page.component.html',
   styleUrl: './artworks-page.component.scss',
