@@ -92,3 +92,7 @@ a host is picked.
   JD calls out as the #1 skill ("2+ years SQL Server — this is key!").
 - **EF Core Code-First** for the rest: shows ORM fluency without pretending raw
   SQL is the only tool in the box.
+
+## Deployment
+
+Backend deploys to Render (Docker), frontend to Vercel. See .github/workflows/api-ci.yml.
