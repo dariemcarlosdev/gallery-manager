@@ -6,26 +6,26 @@
 <section class="panel">
   <h2>Add a piece</h2>
   <form class="artwork-form" (ngSubmit)="onCreate()">
-    <label>
-      <span>Title</span>
+    <label class="form-field">
+      <span class="form-field__label">Title</span>
       <input name="title" type="text" required maxlength="200"
              [ngModel]="draft().title"
              (ngModelChange)="setDraftField('title', $event)" />
     </label>
-    <label>
-      <span>Artist</span>
+    <label class="form-field">
+      <span class="form-field__label">Artist</span>
       <input name="artist" type="text" required maxlength="150"
              [ngModel]="draft().artist"
              (ngModelChange)="setDraftField('artist', $event)" />
     </label>
-    <label>
-      <span>Medium</span>
+    <label class="form-field">
+      <span class="form-field__label">Medium</span>
       <input name="medium" type="text" required maxlength="100"
              [ngModel]="draft().medium"
              (ngModelChange)="setDraftField('medium', $event)" />
     </label>
-    <label>
-      <span>Price (USD)</span>
+    <label class="form-field">
+      <span class="form-field__label">Price (USD)</span>
       <input name="price" type="number" min="0" step="0.01" required
              [ngModel]="draft().price"
              (ngModelChange)="setDraftField('price', $event)" />
@@ -40,7 +40,7 @@
   <div class="panel__row">
     <h2>Collection</h2>
     <label class="filter">
-      <span>Status</span>
+      <span class="eyebrow">Status</span>
       <select [ngModel]="statusFilter()" (ngModelChange)="onFilterChange($event)">
         <option value="">All</option>
         @for (status of statuses; track status) {
@@ -61,39 +61,39 @@
   } @else {
     <ul class="artwork-list" [@listStagger]="artworks().length">
       @for (artwork of artworks(); track artwork.id) {
-        <li class="artwork-card" [@listItem]>
-          <span class="artwork-card__corner artwork-card__corner--tl" aria-hidden="true"></span>
-          <span class="artwork-card__corner artwork-card__corner--br" aria-hidden="true"></span>
-          <div class="artwork-card__main">
-            <h3>{{ artwork.title }}</h3>
-            <p class="artwork-card__meta"><span class="eyebrow">{{ artwork.artist }}</span> · {{ artwork.medium }}</p>
-            <p class="artwork-card__price">{{ artwork.price | currency }}</p>
-          </div>
-          <div class="artwork-card__status">
-            <span class="badge" [class]="'badge--' + artwork.status.toLowerCase()">{{ artwork.status }}</span>
-            <div class="artwork-card__actions">
-              <select [ngModel]="pendingStatusFor(artwork)" (ngModelChange)="onStatusSelect(artwork, $event)">
-                @for (status of statuses; track status) {
-                  <option [value]="status">{{ status }}</option>
-                }
-              </select>
-              @if (pendingStatusFor(artwork) === 'OnLoan') {
-                <input
-                  type="number"
-                  class="exhibit-id-input"
-                  placeholder="Exhibit ID"
-                  [ngModel]="exhibitIdFor(artwork.id)"
-                  (ngModelChange)="onExhibitIdChange(artwork.id, $event)" />
-                <button
-                  type="button"
-                  class="btn btn--ghost btn--sm"
-                  [disabled]="!exhibitIdFor(artwork.id)"
-                  (click)="onConfirmOnLoan(artwork)">
-                  Confirm
-                </button>
-              }
+        <li [@listItem]>
+          <app-gallery-card>
+            <div class="artwork-card__main">
+              <h3>{{ artwork.title }}</h3>
+              <p class="artwork-card__meta"><span class="eyebrow">{{ artwork.artist }}</span> · {{ artwork.medium }}</p>
+              <p class="artwork-card__price">{{ artwork.price | currency }}</p>
             </div>
-          </div>
+            <div class="artwork-card__status">
+              <app-status-badge [status]="artwork.status" />
+              <div class="artwork-card__actions">
+                <select [ngModel]="pendingStatusFor(artwork)" (ngModelChange)="onStatusSelect(artwork, $event)">
+                  @for (status of statuses; track status) {
+                    <option [value]="status">{{ status }}</option>
+                  }
+                </select>
+                @if (pendingStatusFor(artwork) === 'OnLoan') {
+                  <input
+                    type="number"
+                    class="id-input"
+                    placeholder="Exhibit ID"
+                    [ngModel]="exhibitIdFor(artwork.id)"
+                    (ngModelChange)="onExhibitIdChange(artwork.id, $event)" />
+                  <button
+                    type="button"
+                    class="btn btn--ghost btn--sm"
+                    [disabled]="!exhibitIdFor(artwork.id)"
+                    (click)="onConfirmOnLoan(artwork)">
+                    Confirm
+                  </button>
+                }
+              </div>
+            </div>
+          </app-gallery-card>
         </li>
       }
     </ul>

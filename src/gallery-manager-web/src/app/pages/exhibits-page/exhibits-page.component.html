@@ -15,31 +15,31 @@
   } @else {
     <ul class="exhibit-list" [@listStagger]="exhibits().length">
       @for (exhibit of exhibits(); track exhibit.id) {
-        <li class="exhibit-card" [class.is-active]="activeExhibitId() === exhibit.id" [@listItem]>
-          <span class="exhibit-card__corner exhibit-card__corner--tl" aria-hidden="true"></span>
-          <span class="exhibit-card__corner exhibit-card__corner--br" aria-hidden="true"></span>
-          <div class="exhibit-card__main">
-            <h3>{{ exhibit.name }}</h3>
-            <p class="exhibit-card__dates">{{ exhibit.startDate }} – {{ exhibit.endDate }}</p>
-          </div>
-          <div class="exhibit-card__actions">
-            <input
-              type="number"
-              placeholder="Artwork ID"
-              class="artwork-id-input"
-              [ngModel]="artworkIdFor(exhibit.id)"
-              (ngModelChange)="onArtworkIdChange(exhibit.id, $event)" />
-            <button
-              type="button"
-              class="btn btn--ghost"
-              [disabled]="assigning() === exhibit.id || !artworkIdFor(exhibit.id)"
-              (click)="onAssign(exhibit)">
-              {{ assigning() === exhibit.id ? 'Assigning…' : 'Assign' }}
-            </button>
-            <button type="button" class="btn btn--primary" (click)="onViewRevenue(exhibit)">
-              Revenue
-            </button>
-          </div>
+        <li [@listItem]>
+          <app-gallery-card [active]="activeExhibitId() === exhibit.id">
+            <div class="exhibit-card__main">
+              <h3>{{ exhibit.name }}</h3>
+              <p class="exhibit-card__dates">{{ exhibit.startDate }} – {{ exhibit.endDate }}</p>
+            </div>
+            <div class="exhibit-card__actions">
+              <input
+                type="number"
+                placeholder="Artwork ID"
+                class="id-input"
+                [ngModel]="artworkIdFor(exhibit.id)"
+                (ngModelChange)="onArtworkIdChange(exhibit.id, $event)" />
+              <button
+                type="button"
+                class="btn btn--ghost"
+                [disabled]="assigning() === exhibit.id || !artworkIdFor(exhibit.id)"
+                (click)="onAssign(exhibit)">
+                {{ assigning() === exhibit.id ? 'Assigning…' : 'Assign' }}
+              </button>
+              <button type="button" class="btn btn--primary" (click)="onViewRevenue(exhibit)">
+                Revenue
+              </button>
+            </div>
+          </app-gallery-card>
         </li>
       }
     </ul>
@@ -61,7 +61,7 @@
             @for (line of data.lines; track line.artworkTitle) {
               <li class="revenue-row">
                 <span>{{ line.artworkTitle }}</span>
-                <span>{{ line.salePrice | currency }}</span>
+                <span class="revenue-row__price">{{ line.salePrice | currency }}</span>
               </li>
             }
           </ul>
