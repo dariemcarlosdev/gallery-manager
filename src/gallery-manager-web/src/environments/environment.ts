@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://placeholder-api-host/api'
+  apiUrl: 'https://gallery-manager-api.onrender.com/api'
 };

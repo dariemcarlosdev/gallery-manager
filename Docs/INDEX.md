@@ -8,6 +8,7 @@
 | [api-reference.md](api-reference.md) | Every HTTP endpoint — method, route, request/response, validation |
 | [data-access.md](data-access.md) | EF Core model, Postgres schema, the raw-SQL revenue function |
 | [frontend.md](frontend.md) | Angular app structure, services, models, env config |
+| [deployment.md](deployment.md) | GitHub/CI/CD checklist — Render (BE) + Vercel (FE) |
 
 Related, not duplicated here:
 - [../README.md](../README.md) — local setup steps (DB, migrations, running)
