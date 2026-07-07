@@ -73,9 +73,10 @@
   cursor: pointer;
   transition: border-color var(--duration-fast) ease-out;
 
-  &:focus {
+  &:focus-visible {
     border-color: var(--color-accent);
     outline: none;
+    box-shadow: 0 0 0 3px var(--color-accent-tint);
   }
 }
 
