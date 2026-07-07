@@ -1,0 +1,55 @@
+name: API CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/GalleryManager.Api/**"
+      - ".github/workflows/api-ci.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/GalleryManager.Api/**"
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore
+        run: dotnet restore GalleryManager.sln
+
+      - name: Build
+        run: dotnet build GalleryManager.sln --no-restore --configuration Release
+
+      # - name: Test
+      #   run: dotnet test GalleryManager.sln --no-build --configuration Release
+      #   (uncomment once a test project exists)
+
+      - name: Publish
+        run: dotnet publish src/GalleryManager.Api/GalleryManager.Api.csproj -c Release -o ./publish
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gallery-api
+          path: ./publish
+
+  # API doesn't run on Vercel (no .NET runtime there). Render builds the
+  # Dockerfile (src/GalleryManager.Api/Dockerfile) server-side on its own -
+  # this job just triggers that build/deploy once build-and-test passes,
+  # so Render never redeploys a commit that doesn't build.
+  deploy:
+    needs: build-and-test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy
+        run: curl -fsS -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"

@@ -1,0 +1,76 @@
+<section class="page-head">
+  <h1>Exhibits</h1>
+  <p class="page-head__sub">Assign artworks and check sell-through revenue per show.</p>
+</section>
+
+@if (error()) {
+  <p class="banner banner--error" [@panelReveal]>{{ error() }}</p>
+}
+
+<section class="panel">
+  @if (loading()) {
+    <p class="empty-state">Loading exhibits…</p>
+  } @else if (exhibits().length === 0) {
+    <p class="empty-state">No exhibits yet.</p>
+  } @else {
+    <ul class="exhibit-list" [@listStagger]="exhibits().length">
+      @for (exhibit of exhibits(); track exhibit.id) {
+        <li class="exhibit-card" [class.is-active]="activeExhibitId() === exhibit.id" [@listItem]>
+          <span class="exhibit-card__corner exhibit-card__corner--tl" aria-hidden="true"></span>
+          <span class="exhibit-card__corner exhibit-card__corner--br" aria-hidden="true"></span>
+          <div class="exhibit-card__main">
+            <h3>{{ exhibit.name }}</h3>
+            <p class="exhibit-card__dates">{{ exhibit.startDate }} – {{ exhibit.endDate }}</p>
+          </div>
+          <div class="exhibit-card__actions">
+            <input
+              type="number"
+              placeholder="Artwork ID"
+              class="artwork-id-input"
+              [ngModel]="artworkIdFor(exhibit.id)"
+              (ngModelChange)="onArtworkIdChange(exhibit.id, $event)" />
+            <button
+              type="button"
+              class="btn btn--ghost"
+              [disabled]="assigning() === exhibit.id || !artworkIdFor(exhibit.id)"
+              (click)="onAssign(exhibit)">
+              {{ assigning() === exhibit.id ? 'Assigning…' : 'Assign' }}
+            </button>
+            <button type="button" class="btn btn--primary" (click)="onViewRevenue(exhibit)">
+              Revenue
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>
+
+@if (activeExhibitId(); as exhibitId) {
+  <section class="panel" [@panelReveal]>
+    <h2>Revenue — exhibit #{{ exhibitId }}</h2>
+
+    @if (revenueLoading()) {
+      <p class="empty-state">Loading revenue…</p>
+    } @else {
+      @if (revenue(); as data) {
+        @if (data.lines.length === 0) {
+          <p class="empty-state">No sold pieces in this exhibit yet.</p>
+        } @else {
+          <ul class="revenue-list">
+            @for (line of data.lines; track line.artworkTitle) {
+              <li class="revenue-row">
+                <span>{{ line.artworkTitle }}</span>
+                <span>{{ line.salePrice | currency }}</span>
+              </li>
+            }
+          </ul>
+          <div class="revenue-total">
+            <span>Total</span>
+            <span>{{ data.total | currency }}</span>
+          </div>
+        }
+      }
+    }
+  </section>
+}

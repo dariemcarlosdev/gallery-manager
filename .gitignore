@@ -1,0 +1,27 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+
+## Visual Studio
+.vs/
+*.userosscache
+*.sln.docstates
+
+## Rider / VS Code
+.idea/
+.vscode/
+
+## Secrets - never commit real connection strings
+appsettings.Local.json
+appsettings.*.local.json
+
+## Angular (future client/ folder)
+node_modules/
+dist/
+.angular/
+
+## OS
+.DS_Store
+Thumbs.db

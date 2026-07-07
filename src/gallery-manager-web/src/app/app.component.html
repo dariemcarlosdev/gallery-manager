@@ -1,0 +1,16 @@
+<header class="shell-header">
+  <div class="shell-header__brand">
+    <span class="shell-header__mark">GM</span>
+    <span class="shell-header__title">Gallery Manager</span>
+  </div>
+  <nav class="shell-nav">
+    <a routerLink="/artworks" routerLinkActive="is-active">Artworks</a>
+    <a routerLink="/exhibits" routerLinkActive="is-active">Exhibits</a>
+  </nav>
+</header>
+
+<main class="shell-main">
+  <div [@routeFade]="outletState(outlet)">
+    <router-outlet #outlet="outlet"></router-outlet>
+  </div>
+</main>

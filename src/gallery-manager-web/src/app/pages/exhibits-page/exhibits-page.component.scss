@@ -1,0 +1,112 @@
+.exhibit-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.exhibit-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  transition: border-color 0.2s ease-out, box-shadow 0.25s var(--ease-premium), transform 0.25s var(--ease-premium);
+
+  &:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-2px);
+
+    .exhibit-card__corner {
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.exhibit-card.is-active {
+  border-color: var(--color-accent);
+}
+
+.exhibit-card__corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+  transition: opacity 0.25s var(--ease-premium);
+  pointer-events: none;
+}
+
+.exhibit-card__corner--tl {
+  top: 6px;
+  left: 6px;
+  border-top: 2px solid var(--color-accent);
+  border-left: 2px solid var(--color-accent);
+}
+
+.exhibit-card__corner--br {
+  bottom: 6px;
+  right: 6px;
+  border-bottom: 2px solid var(--color-accent);
+  border-right: 2px solid var(--color-accent);
+}
+
+.exhibit-card__main h3 {
+  font-size: 1.05rem;
+}
+
+.exhibit-card__dates {
+  color: var(--color-ink-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.exhibit-card__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.artwork-id-input {
+  width: 110px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+}
+
+.revenue-list {
+  list-style: none;
+  margin: 0 0 var(--space-3);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.revenue-row {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.revenue-total {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-line);
+}

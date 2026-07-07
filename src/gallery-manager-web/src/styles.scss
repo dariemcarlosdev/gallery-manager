@@ -1,0 +1,244 @@
+:root {
+  --color-bg: #121113;
+  --color-surface: #1a1918;
+  --color-surface-raised: #221f1d;
+  --color-ink: #f5f1ea;
+  --color-ink-muted: #948d84;
+  --color-line: #322f2c;
+
+  /* Red dot — the gallery convention for a sold piece, doubling as the one bright accent */
+  --color-accent: #ff3b30;
+  --color-accent-hover: #ff5c52;
+  --color-accent-tint: rgba(255, 59, 48, 0.14);
+
+  --color-available: #34d399;
+  --color-available-tint: rgba(52, 211, 153, 0.14);
+  --color-onloan: #fbbf24;
+  --color-onloan-tint: rgba(251, 191, 36, 0.14);
+  --color-sold: var(--color-accent);
+  --color-sold-tint: var(--color-accent-tint);
+
+  --font-display: 'Fraunces', ui-serif, serif;
+  --font-body: 'Work Sans', ui-sans-serif, system-ui, sans-serif;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  --radius-sm: 4px;
+  --radius-md: 10px;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.24), 0 6px 20px rgba(0, 0, 0, 0.3);
+  --shadow-card-hover: 0 4px 14px rgba(0, 0, 0, 0.32), 0 20px 40px rgba(0, 0, 0, 0.4);
+  --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0 0 var(--space-2);
+  color: var(--color-ink);
+  font-optical-sizing: auto;
+}
+
+h1 {
+  font-size: 2rem;
+  letter-spacing: -0.01em;
+}
+
+/* Museum wall-label style eyebrow — used for field labels & metadata */
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+p {
+  margin: 0 0 var(--space-3);
+}
+
+button {
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+input,
+select {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+a {
+  color: var(--color-accent);
+}
+
+::selection {
+  background: var(--color-accent-tint);
+  color: var(--color-accent);
+}
+
+/* Shared across pages — small POC, not worth componentizing further */
+
+.page-head {
+  margin-bottom: var(--space-6);
+}
+
+.page-head__sub {
+  color: var(--color-ink-muted);
+  margin: 0;
+}
+
+.panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  margin-bottom: var(--space-5);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.25s var(--ease-premium);
+}
+
+.panel__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.panel__row h2 {
+  margin: 0;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  transition: background-color 0.15s ease-out, border-color 0.15s ease-out, transform 0.1s ease-out,
+    box-shadow 0.2s var(--ease-premium);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn--primary {
+  background: var(--color-accent);
+  color: var(--color-surface);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: var(--color-accent-hover);
+  box-shadow: 0 4px 14px rgba(255, 59, 48, 0.3);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn--sm {
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.85rem;
+}
+
+.btn--ghost {
+  background: var(--color-surface-raised);
+  border-color: var(--color-line);
+  color: var(--color-ink);
+}
+
+.btn--ghost:hover:not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.badge {
+  display: inline-block;
+  padding: var(--space-1) var(--space-3);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.badge--available {
+  background: var(--color-available-tint);
+  color: var(--color-available);
+}
+
+.badge--onloan {
+  background: var(--color-onloan-tint);
+  color: var(--color-onloan);
+}
+
+.badge--sold {
+  background: var(--color-sold-tint);
+  color: var(--color-sold);
+}
+
+.banner {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-4);
+  font-size: 0.9rem;
+}
+
+.banner--error {
+  background: var(--color-accent-tint);
+  color: var(--color-accent);
+}
+
+.empty-state {
+  color: var(--color-ink-muted);
+  padding: var(--space-5) 0;
+  text-align: center;
+}
