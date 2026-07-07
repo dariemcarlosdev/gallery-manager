@@ -33,9 +33,9 @@ Vercel has no .NET runtime, so the API can't live there (see [CLAUDE.md](../CLAU
 ### Render (backend) — manual dashboard steps
 - [x] New Web Service created, connected to `dariemcarlosdev/gallery-manager` — `gallery-manager-api`
 - [x] Runtime: Docker, Dockerfile path `src/GalleryManager.Api/Dockerfile`, build context = repo root
-- [ ] Env var `ConnectionStrings__GalleryDb` set (Neon connection string) — confirm in Render dashboard
-- [ ] Env var `ASPNETCORE_ENVIRONMENT=Production` set — confirm in Render dashboard
-- [ ] Health check path set to `/health` — confirm in Render dashboard
+- [x] Env var `ConnectionStrings__GalleryDb` set (Neon connection string) — confirm in Render dashboard
+- [x] Env var `ASPNETCORE_ENVIRONMENT=Production` set — confirm in Render dashboard
+- [x] Health check path set to `/health` — confirm in Render dashboard
 - [x] Deploy-hook URL copied → added as GitHub secret `RENDER_DEPLOY_HOOK_URL`
 - [x] Service URL copied — `https://gallery-manager-api.onrender.com`
 
@@ -49,14 +49,14 @@ Vercel has no .NET runtime, so the API can't live there (see [CLAUDE.md](../CLAU
 
 ### Cross-wire (final step, after both URLs known)
 - [x] `src/gallery-manager-web/src/environments/environment.ts` `apiUrl` → `https://gallery-manager-api.onrender.com/api`, commit + push
-- [ ] Render env var `Frontend__VercelUrl` → `https://gallery-manager-henna.vercel.app`, redeploy (user to set in Render dashboard)
+- [x] Render env var `Frontend__VercelUrl` → `https://gallery-manager-henna.vercel.app`, redeploy (user to set in Render dashboard)
 
 ## Verification
 
-1. `dotnet build GalleryManager.sln` — clean.
-2. Push to `main` → `gh run list` shows `build-and-test` green, `deploy` green (once Render secret set).
-3. `GET https://<render-service>.onrender.com/health` → `{"status":"ok"}`.
-4. Open Vercel URL → `/artworks` loads, calls Render API, no CORS error in browser console.
+1. [x] `dotnet build GalleryManager.sln` — clean.
+2. [x] Push to `main` → `gh run list` shows `build-and-test` green, `deploy` green.
+3. [x] `GET https://gallery-manager-api.onrender.com/health` → `{"status":"ok"}`.
+4. [x] Open Vercel URL → `/artworks` loads, calls Render API, no CORS error in browser console. Confirmed working by user.
 
 ## Last synced
-2026-07-07 — repo pushed, CI build gate verified green, Render/Vercel dashboard steps pending.
+2026-07-07 — deployment complete. Repo, CI, Render (BE), Vercel (FE), cross-wire all done and verified end-to-end.
