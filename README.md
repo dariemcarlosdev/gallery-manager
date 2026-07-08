@@ -1,4 +1,4 @@
-# Gallery Manager API
+# Gallery Manager
 
 [![API CI](https://github.com/dariemcarlosdev/gallery-manager/actions/workflows/api-ci.yml/badge.svg)](https://github.com/dariemcarlosdev/gallery-manager/actions/workflows/api-ci.yml)
 [![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
