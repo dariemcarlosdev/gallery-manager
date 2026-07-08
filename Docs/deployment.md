@@ -48,8 +48,8 @@ Vercel has no .NET runtime, so the API can't live there (see [CLAUDE.md](../CLAU
 - [x] Vercel URL copied — `https://gallery-manager-henna.vercel.app`
 
 ### Cross-wire (final step, after both URLs known)
-- [x] `src/gallery-manager-web/src/environments/environment.ts` `apiUrl` → `https://gallery-manager-api.onrender.com/api`, commit + push
-- [x] Render env var `Frontend__VercelUrl` → `https://gallery-manager-henna.vercel.app`, redeploy (user to set in Render dashboard)
+- [x] `src/gallery-manager-web/src/environments/environment.ts` `apiUrl` → `https://gallery-manager-api.onrender.com/api/v1` (updated to versioned route after API versioning was added — see PR #2), commit + push
+- [x] Render env var `Frontend__VercelUrl` → `https://gallery-manager-henna.vercel.app`, redeploy (set by user in Render dashboard)
 
 ## Verification
 
@@ -58,5 +58,15 @@ Vercel has no .NET runtime, so the API can't live there (see [CLAUDE.md](../CLAU
 3. [x] `GET https://gallery-manager-api.onrender.com/health` → `{"status":"ok"}`.
 4. [x] Open Vercel URL → `/artworks` loads, calls Render API, no CORS error in browser console. Confirmed working by user.
 
+## Post-launch production incidents & fixes (2026-07-07/08)
+
+Three issues surfaced after the initial "done" deploy, all fixed and verified end-to-end:
+
+1. **`ConnectionStrings__GalleryDb` wrong format on Render** — Neon's dashboard gives a `postgresql://user:pass@host/db?...` URI-style string, but Npgsql (used by `Npgsql.EntityFrameworkCore.PostgreSQL`) only accepts ADO.NET keyword=value format (`Host=...;Port=...;Database=...;Username=...;Password=...;SSL Mode=Require;...`). Symptom: `/health` returned 200 but every DB-touching endpoint (`/api/v1/artworks`, `/api/v1/exhibits`) returned 500. Fixed by updating the Render env var to keyword=value format and redeploying.
+2. **`Frontend__VercelUrl` env var missing on Render** — CORS policy in `Program.cs` falls back to a placeholder origin when this config key is unset, so the real Vercel origin was never in the allowed-origins list. Symptom: API returned 200 to `curl` but the browser blocked the response (no `Access-Control-Allow-Origin` header for the Vercel origin) — frontend showed "Could not load artworks. Is the API running?". Fixed by adding `Frontend__VercelUrl=https://gallery-manager-henna.vercel.app` on Render and redeploying. Verified via `curl` with `Origin` header — response now includes the correct `Access-Control-Allow-Origin`.
+3. **Exhibit revenue endpoint 500 error (PR #5, merged)** — `GET /api/v1/exhibits/{id}/revenue` used `SqlQuery<RevenueRow>` with `SELECT *` from `get_exhibit_revenue()`. EF Core 8's `SqlQuery<T>` requires exact column-name matches (not ordinal), but the Postgres function returns snake_case columns (`artwork_title`, `sale_price`) while `RevenueRow` has PascalCase properties (`ArtworkTitle`, `SalePrice`), causing `InvalidOperationException: The required column 'ArtworkTitle' was not present in the results of a 'FromSql' operation.` Fixed by aliasing the columns in the SQL query (`SELECT artwork_title AS "ArtworkTitle", sale_price AS "SalePrice" FROM get_exhibit_revenue(...)`). Verified locally against Neon for exhibits 1 and 2, then merged to `main` and auto-deployed to Render.
+
+**Security note:** the Neon DB password was pasted in plaintext in chat while diagnosing issue #1 above. It should be rotated in the Neon dashboard as a precaution.
+
 ## Last synced
-2026-07-07 — deployment complete. Repo, CI, Render (BE), Vercel (FE), cross-wire all done and verified end-to-end.
+2026-07-07 — deployment complete, including post-launch connection-string, CORS, and revenue-endpoint fixes. Repo, CI, Render (BE), Vercel (FE), cross-wire all verified end-to-end.
