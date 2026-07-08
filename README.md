@@ -33,6 +33,7 @@ Cross-cutting, technology-facing concerns applied across the App Features above.
 | **API versioning** | All routes served under `/api/v1/` via `Asp.Versioning.Http`. | [Docs/rest-api-best-practices.md](Docs/rest-api-best-practices.md) |
 | **RFC 7807 error responses & rate limiting** | Standardized `application/problem+json` errors; fixed-window rate limiting (100 req/min) with `429` + `Retry-After`. | [Docs/rest-api-best-practices.md](Docs/rest-api-best-practices.md) |
 | **Angular SPA frontend** | Standalone-component Angular 19 app with lazy-loaded artworks/exhibits pages. | [Docs/frontend.md](Docs/frontend.md), [Docs/frontend-backend-flow.md](Docs/frontend-backend-flow.md) |
+| **Output caching** | 30-second server-side cache on all GET endpoints (`OutputCache` middleware, `VaryByQuery("*")`), reducing DB round-trips on repeated reads. | [Docs/rest-api-best-practices.md](Docs/rest-api-best-practices.md) |
 | **CI/CD & cloud hosting** | GitHub Actions build/publish pipeline, auto-deploy to Render (API) and Vercel (SPA). | [Docs/deployment.md](Docs/deployment.md) |
 
 ---
@@ -112,7 +113,7 @@ No API gateway, message queue, or cache layer — a 2-entity POC doesn't need th
 
 ## REST API Best Practices
 
-Eight practices applied across all endpoints:
+Nine practices applied across all endpoints:
 
 | Practice | Implementation |
 |----------|---------------|
@@ -124,6 +125,7 @@ Eight practices applied across all endpoints:
 | **RFC 7807 Errors** | All errors return `application/problem+json` via `Results.Problem()` |
 | **Rate Limiting** | Fixed window (100 req/min) with `429 Too Many Requests` + `Retry-After` header |
 | **OpenAPI Metadata** | `.Produces<T>()` / `.ProducesProblem()` annotations on all endpoints |
+| **Output Caching** | 30s server-side cache on GET endpoints via `OutputCache` middleware, `VaryByQuery("*")` for filter/pagination isolation |
 
 Full details: [Docs/rest-api-best-practices.md](Docs/rest-api-best-practices.md)
 
