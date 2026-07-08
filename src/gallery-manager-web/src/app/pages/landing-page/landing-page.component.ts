@@ -13,25 +13,36 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
 })
 export class LandingPageComponent implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
+  private hero: HTMLElement | null = null;
+  private rafId: number | null = null;
   private scrollHandler?: () => void;
 
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
 
+    this.hero = document.querySelector('.hero') as HTMLElement | null;
+
     this.scrollHandler = () => {
-      const scrollY = window.scrollY;
-      const hero = document.querySelector('.hero') as HTMLElement | null;
-      if (hero) {
-        hero.style.setProperty('--scroll-y', `${scrollY}`);
-      }
+      if (!this.hero || this.rafId !== null) return;
+
+      this.rafId = window.requestAnimationFrame(() => {
+        this.rafId = null;
+        this.hero?.style.setProperty('--scroll-y', String(window.scrollY));
+      });
     };
 
+    this.scrollHandler();
     window.addEventListener('scroll', this.scrollHandler, { passive: true });
   }
 
   ngOnDestroy(): void {
     if (this.scrollHandler) {
       window.removeEventListener('scroll', this.scrollHandler);
+    }
+
+    if (this.rafId !== null) {
+      cancelAnimationFrame(this.rafId);
+      this.rafId = null;
     }
   }
 }
