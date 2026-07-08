@@ -33,7 +33,7 @@ Cross-cutting, technology-facing concerns applied across the App Features above.
 | **API versioning** | All routes served under `/api/v1/` via `Asp.Versioning.Http`. | [Docs/rest-api-best-practices.md](Docs/rest-api-best-practices.md) |
 | **RFC 7807 error responses & rate limiting** | Standardized `application/problem+json` errors; fixed-window rate limiting (100 req/min) with `429` + `Retry-After`. | [Docs/rest-api-best-practices.md](Docs/rest-api-best-practices.md) |
 | **Angular SPA frontend** | Standalone-component Angular 19 app with lazy-loaded artworks/exhibits pages. | [Docs/frontend.md](Docs/frontend.md), [Docs/frontend-backend-flow.md](Docs/frontend-backend-flow.md) |
-| **Output caching** | 30-second server-side cache on all GET endpoints (`OutputCache` middleware, `VaryByQuery("*")`), reducing DB round-trips on repeated reads. | [Docs/rest-api-best-practices.md](Docs/rest-api-best-practices.md) |
+| **Output caching** | 30-second server-side cache on `/api/v1` GET endpoints (`OutputCache` middleware, `SetVaryByQuery("*")`), reducing DB round-trips on repeated reads. | [Docs/rest-api-best-practices.md](Docs/rest-api-best-practices.md) |
 | **CI/CD & cloud hosting** | GitHub Actions build/publish pipeline, auto-deploy to Render (API) and Vercel (SPA). | [Docs/deployment.md](Docs/deployment.md) |
 
 ---
