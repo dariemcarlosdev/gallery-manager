@@ -38,6 +38,14 @@ public static class CreateArtwork
 
             var idempotencyKey = httpContext.Request.Headers["Idempotency-Key"].FirstOrDefault();
 
+            if (idempotencyKey is not null && idempotencyKey.Length > 64)
+            {
+                return Results.Problem(
+                    detail: "Idempotency-Key must be 64 characters or fewer.",
+                    statusCode: StatusCodes.Status400BadRequest,
+                    title: "Invalid idempotency key");
+            }
+
             if (!string.IsNullOrWhiteSpace(idempotencyKey))
             {
                 var existing = await db.Artworks
@@ -64,7 +72,27 @@ public static class CreateArtwork
             };
 
             db.Artworks.Add(artwork);
-            await db.SaveChangesAsync(ct);
+
+            try
+            {
+                await db.SaveChangesAsync(ct);
+            }
+            catch (DbUpdateException) when (!string.IsNullOrWhiteSpace(idempotencyKey))
+            {
+                db.ChangeTracker.Clear();
+                var raced = await db.Artworks
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(a => a.IdempotencyKey == idempotencyKey, ct);
+
+                if (raced is not null)
+                {
+                    return Results.Ok(new Response(
+                        raced.Id, raced.Title, raced.Artist,
+                        raced.Medium, raced.Price, raced.Status.ToString()));
+                }
+
+                throw;
+            }
 
             var response = new Response(
                 artwork.Id, artwork.Title, artwork.Artist,

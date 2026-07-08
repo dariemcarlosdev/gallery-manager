@@ -37,11 +37,11 @@ public static class GetExhibits
             if (string.IsNullOrWhiteSpace(sortBy))
                 query = query.OrderBy(e => e.StartDate);
 
-            var paged = new PagedRequest(page, pageSize);
+            var paged = new PagedRequest { Page = page, PageSize = pageSize };
 
             var result = await query
                 .Select(e => new Response(e.Id, e.Name, e.StartDate, e.EndDate))
-                .ToPagedResponseAsync(paged.Page, paged.PageSize, ct);
+                .ToPagedResponseAsync(paged.EffectivePage, paged.EffectivePageSize, ct);
 
             return Results.Ok(result);
         })

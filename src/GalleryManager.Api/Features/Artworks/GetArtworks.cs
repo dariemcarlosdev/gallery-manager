@@ -56,12 +56,12 @@ public static class GetArtworks
             if (string.IsNullOrWhiteSpace(sortBy))
                 query = query.OrderByDescending(a => a.CreatedAtUtc);
 
-            var paged = new PagedRequest(page, pageSize);
+            var paged = new PagedRequest { Page = page, PageSize = pageSize };
 
             var result = await query
                 .Select(a => new Response(
                     a.Id, a.Title, a.Artist, a.Medium, a.Price, a.Status.ToString(), a.ExhibitId))
-                .ToPagedResponseAsync(paged.Page, paged.PageSize, ct);
+                .ToPagedResponseAsync(paged.EffectivePage, paged.EffectivePageSize, ct);
 
             return Results.Ok(result);
         })

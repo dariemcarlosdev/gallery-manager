@@ -3,10 +3,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GalleryManager.Api.Common;
 
-public record PagedRequest(int Page = 1, int PageSize = 20)
+public record PagedRequest
 {
-    public int Page { get; init; } = Page < 1 ? 1 : Page;
-    public int PageSize { get; init; } = PageSize < 1 ? 20 : Math.Min(PageSize, 100);
+    public int Page { get; init; } = 1;
+    public int PageSize { get; init; } = 20;
+
+    public int EffectivePage => Page < 1 ? 1 : Page;
+    public int EffectivePageSize => PageSize < 1 ? 20 : Math.Min(PageSize, 100);
 }
 
 public record PagedResponse<T>(
