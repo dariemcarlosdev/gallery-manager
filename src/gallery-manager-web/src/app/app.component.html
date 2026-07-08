@@ -1,15 +1,19 @@
-<header class="shell-header">
-  <div class="shell-header__brand">
-    <span class="shell-header__mark" aria-hidden="true">GM</span>
-    <span class="shell-header__title">Gallery Manager</span>
-  </div>
-  <nav class="shell-nav" aria-label="Main navigation">
-    <a routerLink="/artworks" routerLinkActive="is-active">Artworks</a>
-    <a routerLink="/exhibits" routerLinkActive="is-active">Exhibits</a>
-  </nav>
-</header>
+@if (!isLanding) {
+  <header class="shell-header">
+    <div class="shell-header__brand">
+      <a routerLink="/" class="shell-header__brand-link">
+        <span class="shell-header__mark" aria-hidden="true">GM</span>
+        <span class="shell-header__title">Gallery Manager</span>
+      </a>
+    </div>
+    <nav class="shell-nav" aria-label="Main navigation">
+      <a routerLink="/artworks" routerLinkActive="is-active">Artworks</a>
+      <a routerLink="/exhibits" routerLinkActive="is-active">Exhibits</a>
+    </nav>
+  </header>
+}
 
-<main class="shell-main">
+<main [class.shell-main]="!isLanding">
   <div [@routeFade]="outletState(outlet)">
     <router-outlet #outlet="outlet"></router-outlet>
   </div>
