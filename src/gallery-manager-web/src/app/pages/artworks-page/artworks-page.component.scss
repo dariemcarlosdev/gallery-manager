@@ -19,6 +19,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+  min-width: 0;
 }
 
 .form-field__label {
@@ -34,6 +35,9 @@
   border-radius: var(--radius-sm);
   background: var(--color-bg);
   color: var(--color-ink);
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
   transition: border-color var(--duration-fast) ease-out, box-shadow var(--duration-fast) ease-out;
 
   &:focus {
@@ -49,7 +53,8 @@
 }
 
 .artwork-form .btn {
-  grid-column: 4;
+  grid-column: -2 / -1;
+  justify-self: stretch;
 
   @media (max-width: 720px) {
     grid-column: 1 / -1;

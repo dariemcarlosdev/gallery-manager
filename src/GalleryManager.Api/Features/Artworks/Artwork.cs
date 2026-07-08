@@ -16,5 +16,6 @@ public class Artwork
     public decimal Price { get; set; }
     public ArtworkStatus Status { get; set; } = ArtworkStatus.Available;
     public int? ExhibitId { get; set; }
+    public string? IdempotencyKey { get; set; }
     public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
 }

@@ -9,7 +9,7 @@ public static class UpdateArtworkStatus
 
     public static void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPatch("/api/artworks/{id:int}/status", async (
+        app.MapPatch("/artworks/{id:int}/status", async (
             int id,
             Request request,
             GalleryDbContext db,
@@ -17,13 +17,19 @@ public static class UpdateArtworkStatus
         {
             if (!Enum.TryParse<ArtworkStatus>(request.Status, true, out var newStatus))
             {
-                return Results.BadRequest(new { error = $"Unknown status '{request.Status}'." });
+                return Results.Problem(
+                    detail: $"Unknown status '{request.Status}'. Valid values: {string.Join(", ", Enum.GetNames<ArtworkStatus>())}",
+                    statusCode: StatusCodes.Status400BadRequest,
+                    title: "Invalid status value");
             }
 
             var artwork = await db.Artworks.FirstOrDefaultAsync(a => a.Id == id, ct);
             if (artwork is null)
             {
-                return Results.NotFound();
+                return Results.Problem(
+                    detail: $"Artwork with id {id} was not found.",
+                    statusCode: StatusCodes.Status404NotFound,
+                    title: "Artwork not found");
             }
 
             artwork.Status = newStatus;
@@ -36,6 +42,8 @@ public static class UpdateArtworkStatus
         .WithName("UpdateArtworkStatus")
         .WithTags("Artworks")
         .Produces(StatusCodes.Status204NoContent)
-        .Produces(StatusCodes.Status404NotFound);
+        .ProducesProblem(StatusCodes.Status400BadRequest)
+        .ProducesProblem(StatusCodes.Status404NotFound)
+        .Produces(StatusCodes.Status429TooManyRequests);
     }
 }

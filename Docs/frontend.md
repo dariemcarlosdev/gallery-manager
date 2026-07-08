@@ -12,7 +12,7 @@ Angular 19, standalone components (no `NgModule`), routing enabled, SCSS, no SSR
 src/gallery-manager-web/src/
   environments/
     environment.ts               — prod placeholder apiUrl
-    environment.development.ts   — apiUrl: https://localhost:7080/api
+    environment.development.ts   — apiUrl: https://localhost:7080/api/v1
   app/
     app.config.ts                — provideHttpClient(), provideRouter()
     models/
@@ -33,14 +33,18 @@ Models mirror the backend `Response`/`Request` records field-for-field — see [
 
 ## Services → Endpoints
 
+All services target the versioned base URL (`/api/v1/`) configured in `src/environments/environment*.ts`. Collection endpoints return `PagedResponse<T>` — services unwrap `.data` so components receive flat arrays.
+
 | Service method | Endpoint |
 |---|---|
-| `ArtworkService.getArtworks(status?)` | `GET /api/artworks` |
-| `ArtworkService.createArtwork(req)` | `POST /api/artworks` |
-| `ArtworkService.updateStatus(id, req)` | `PATCH /api/artworks/{id}/status` |
-| `ExhibitService.getExhibits()` | `GET /api/exhibits` |
-| `ExhibitService.assignArtwork(exhibitId, artworkId)` | `POST /api/exhibits/{exhibitId}/artworks/{artworkId}` |
-| `ExhibitService.getRevenue(exhibitId)` | `GET /api/exhibits/{exhibitId}/revenue` |
+| `ArtworkService.getArtworks(status?)` | `GET /api/v1/artworks` (paginated, sortable, filterable) |
+| `ArtworkService.createArtwork(req)` | `POST /api/v1/artworks` (idempotency-key support) |
+| `ArtworkService.updateStatus(id, req)` | `PATCH /api/v1/artworks/{id}/status` |
+| `ExhibitService.getExhibits()` | `GET /api/v1/exhibits` (paginated, sortable, filterable) |
+| `ExhibitService.assignArtwork(exhibitId, artworkId)` | `POST /api/v1/exhibits/{exhibitId}/artworks/{artworkId}` |
+| `ExhibitService.getRevenue(exhibitId)` | `GET /api/v1/exhibits/{exhibitId}/revenue` |
+
+Pagination model: `src/app/models/paged-response.model.ts` — generic `PagedResponse<T>` interface matching backend shape.
 
 Env swap for dev vs prod handled by `angular.json` → `architect.build.configurations.development.fileReplacements` (not present by default in Angular 17+ scaffolds — added manually).
 

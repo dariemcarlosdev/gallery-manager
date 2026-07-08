@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
   Artwork,
@@ -9,6 +9,7 @@ import {
   CreateArtworkResponse,
   UpdateArtworkStatusRequest
 } from '../models/artwork.model';
+import { PagedResponse } from '../models/paged-response.model';
 
 @Injectable({ providedIn: 'root' })
 export class ArtworkService {
@@ -17,8 +18,11 @@ export class ArtworkService {
   constructor(private readonly http: HttpClient) {}
 
   getArtworks(status?: ArtworkStatus): Observable<Artwork[]> {
-    const params = status ? { status } : undefined;
-    return this.http.get<Artwork[]>(this.baseUrl, { params });
+    const params: Record<string, string> = {};
+    if (status) params['status'] = status;
+    return this.http
+      .get<PagedResponse<Artwork>>(this.baseUrl, { params })
+      .pipe(map(res => res.data));
   }
 
   createArtwork(request: CreateArtworkRequest): Observable<CreateArtworkResponse> {
