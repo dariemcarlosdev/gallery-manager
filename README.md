@@ -34,6 +34,8 @@ Cross-cutting, technology-facing concerns applied across the App Features above.
 | **RFC 7807 error responses & rate limiting** | Standardized `application/problem+json` errors; fixed-window rate limiting (100 req/min) with `429` + `Retry-After`. | [Docs/rest-api-best-practices.md](Docs/rest-api-best-practices.md) |
 | **Angular SPA frontend** | Standalone-component Angular 19 app with lazy-loaded artworks/exhibits pages. | [Docs/frontend.md](Docs/frontend.md), [Docs/frontend-backend-flow.md](Docs/frontend-backend-flow.md) |
 | **Output caching** | 30-second server-side cache on `/api/v1` GET endpoints (`OutputCache` middleware, `SetVaryByQuery("*")`), reducing DB round-trips on repeated reads. | [Docs/rest-api-best-practices.md](Docs/rest-api-best-practices.md) |
+| **Raw SQL function for revenue** | `get_exhibit_revenue(exhibit_id)` Postgres function calculates total revenue from sold artworks in an exhibit; called via EF Core `FromSqlInterpolated`. | [Docs/data-access.md](Docs/data-access.md) |
+| **Ccron-job.org hitting /health every 14min** | Keeps Render free-tier dyno alive (Render free dynos sleep after 15min of inactivity). | [Docs/deployment.md](Docs/deployment.md) |
 | **CI/CD & cloud hosting** | GitHub Actions build/publish pipeline, auto-deploy to Render (API) and Vercel (SPA). | [Docs/deployment.md](Docs/deployment.md) |
 
 ---
