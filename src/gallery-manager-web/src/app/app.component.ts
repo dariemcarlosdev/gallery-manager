@@ -15,7 +15,7 @@ export class AppComponent {
   private router = inject(Router);
 
   get isLanding(): boolean {
-    return this.router.url === '/';
+    return this.router.parseUrl(this.router.url).root.children['primary'] === undefined;
   }
 
   outletState(outlet: RouterOutlet): string {
