@@ -95,7 +95,7 @@ Every endpoint declares its success and error response types via `.Produces<T>()
 
 ## 9. Output Caching
 
-Server-side output caching on all GET endpoints using ASP.NET Core's built-in `OutputCache` middleware. Cached responses bypass handler execution entirely for 30 seconds, reducing database round-trips on repeated reads. Cache keys vary by full query string so filtered/paginated/sorted requests cache independently.
+Server-side output caching on all versioned API GET endpoints (`/api/v1/...`) using ASP.NET Core's built-in `OutputCache` middleware. Cached responses bypass handler execution entirely for 30 seconds, reducing database round-trips on repeated reads. Cache keys vary by full query string so filtered/paginated/sorted requests cache independently.
 
 | Where | File |
 |-------|------|
