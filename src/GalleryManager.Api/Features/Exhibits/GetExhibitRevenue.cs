@@ -35,7 +35,7 @@ public static class GetExhibitRevenue
 
             var rows = await db.Database
                 .SqlQuery<RevenueRow>(
-                    $"SELECT * FROM get_exhibit_revenue({exhibitId})")
+                    $"""SELECT artwork_title AS "ArtworkTitle", sale_price AS "SalePrice" FROM get_exhibit_revenue({exhibitId})""")
                 .ToListAsync(ct);
 
             var total = rows.Sum(r => r.SalePrice);
