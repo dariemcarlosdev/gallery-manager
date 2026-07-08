@@ -47,6 +47,7 @@ public static class GetExhibits
         })
         .WithName("GetExhibits")
         .WithTags("Exhibits")
+        .CacheOutput("Short")
         .Produces<PagedResponse<Response>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status429TooManyRequests);
     }

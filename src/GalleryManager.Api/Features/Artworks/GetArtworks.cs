@@ -67,6 +67,7 @@ public static class GetArtworks
         })
         .WithName("GetArtworks")
         .WithTags("Artworks")
+        .CacheOutput("Short")
         .Produces<PagedResponse<Response>>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status429TooManyRequests);
     }

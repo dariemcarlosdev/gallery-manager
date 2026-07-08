@@ -48,6 +48,12 @@ builder.Services.AddRateLimiter(options =>
     };
 });
 
+builder.Services.AddOutputCache(options =>
+{
+    options.AddBasePolicy(builder => builder.NoCache());
+    options.AddPolicy("Short", builder => builder.Expire(TimeSpan.FromSeconds(30)).SetVaryByQuery("*"));
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -83,6 +89,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 app.UseCors(AngularDevCors);
 app.UseHttpsRedirection();
 app.UseRateLimiter();
+app.UseOutputCache();
 
 var versionSet = app.NewApiVersionSet()
     .HasApiVersion(new ApiVersion(1, 0))
