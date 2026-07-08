@@ -45,6 +45,7 @@ public static class GetExhibitRevenue
         })
         .WithName("GetExhibitRevenue")
         .WithTags("Exhibits")
+        .CacheOutput("Short")
         .Produces<Response>(StatusCodes.Status200OK)
         .ProducesProblem(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status429TooManyRequests);
