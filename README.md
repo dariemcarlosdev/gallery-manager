@@ -7,7 +7,23 @@
 [![Deployed on Render](https://img.shields.io/badge/API-Render-46E3B7?logo=render)](https://gallery-manager-api.onrender.com/health)
 [![Frontend on Vercel](https://img.shields.io/badge/Frontend-Vercel-000000?logo=vercel)](https://gallery-manager-henna.vercel.app)
 
-Artwork and exhibit inventory management API for a gallery. Built as a functional POC demonstrating **Vertical Slice Architecture**, **REST API best practices**, and **full-stack .NET + Angular** delivery.
+**What this app does:** Gallery Manager helps a gallery track its artwork inventory and exhibits — recording each piece's price, medium, and sale status, grouping artworks into timed exhibits, and calculating how much revenue an exhibit generated from sold pieces. It's a functional POC demonstrating **Vertical Slice Architecture**, **REST API best practices**, and **full-stack .NET + Angular** delivery.
+
+---
+
+## Features
+
+| Feature | Description | Technical docs |
+|---------|-------------|-----------------|
+| **Artwork inventory** | Create and list artworks with title, artist, medium, price, and status (Available/OnLoan/Sold); paginated, sortable, filterable by status/artist/medium. | [Docs/api-reference.md](Docs/api-reference.md), [Docs/data-access.md](Docs/data-access.md) |
+| **Exhibit management** | Create and list exhibits with a date range, and assign artworks to an exhibit. | [Docs/api-reference.md](Docs/api-reference.md) |
+| **Exhibit revenue calculation** | Computes total revenue from sold artworks in an exhibit via a Postgres function (`get_exhibit_revenue`) called through EF Core raw SQL. | [Docs/data-access.md](Docs/data-access.md) |
+| **Idempotent artwork creation** | `Idempotency-Key` header on `POST /artworks` prevents duplicate creation on client retries. | [Docs/rest-api-best-practices.md](Docs/rest-api-best-practices.md) |
+| **Pagination, sorting & filtering** | Consistent `PagedResponse<T>` shape, whitelisted `sortBy`/`sortDirection`, and query filters across list endpoints. | [Docs/rest-api-best-practices.md](Docs/rest-api-best-practices.md) |
+| **API versioning** | All routes served under `/api/v1/` via `Asp.Versioning.Http`. | [Docs/rest-api-best-practices.md](Docs/rest-api-best-practices.md) |
+| **RFC 7807 error responses & rate limiting** | Standardized `application/problem+json` errors; fixed-window rate limiting (100 req/min) with `429` + `Retry-After`. | [Docs/rest-api-best-practices.md](Docs/rest-api-best-practices.md) |
+| **Angular SPA frontend** | Standalone-component Angular 19 app with lazy-loaded artworks/exhibits pages. | [Docs/frontend.md](Docs/frontend.md), [Docs/frontend-backend-flow.md](Docs/frontend-backend-flow.md) |
+| **CI/CD & cloud hosting** | GitHub Actions build/publish pipeline, auto-deploy to Render (API) and Vercel (SPA). | [Docs/deployment.md](Docs/deployment.md) |
 
 ---
 
@@ -143,13 +159,17 @@ Two entities with a one-to-many relationship:
      --project src/GalleryManager.Api
    ```
 
-3. Apply migrations:
+3. Apply migrations (creates tables **and** the `get_exhibit_revenue` Postgres function — see [`AddExhibitRevenueFunction` migration](src/GalleryManager.Api/Migrations/20260708005519_AddExhibitRevenueFunction.cs)):
    ```bash
    dotnet ef database update --project src/GalleryManager.Api
    ```
+   > `Data/Sql/001_create_get_exhibit_revenue_function.sql` is the human-readable source of truth for that function. It's applied automatically by the migration above — you don't need to run it manually. Only run it by hand if you're working against a database that wasn't provisioned via `dotnet ef database update` (e.g. a quick manual psql session).
 
-4. Run the revenue function script against your DB (one-time):
-   `src/GalleryManager.Api/Data/Sql/001_create_get_exhibit_revenue_function.sql`
+4. (Optional) Seed sample data — 3 exhibits and 7 artworks for local exploration/demo purposes. Safe to re-run (idempotent: truncates and re-inserts):
+   ```bash
+   psql "<your-neon-connection-string>" -f src/GalleryManager.Api/Data/Sql/002_seed_data.sql
+   ```
+   No `psql`? Any Postgres client (DBeaver, pgAdmin, Neon's SQL editor in the web console) works — just run the file's contents against your database.
 
 5. Start the API:
    ```bash
@@ -195,7 +215,7 @@ Frontend auto-deploys to Vercel on push to `main` via Vercel's GitHub integratio
 | [Docs/frontend.md](Docs/frontend.md) | Angular app structure, services, design tokens |
 | [Docs/deployment.md](Docs/deployment.md) | CI/CD and hosting setup |
 
-## Design Rationale (Interview Context)
+## Design Rationale
 
 - **Vertical Slice** mirrors the job description directly — "here's everything for [feature] in one place"
 - **Minimal API** — lightweight, no MVC ceremony, aligns with modern .NET
