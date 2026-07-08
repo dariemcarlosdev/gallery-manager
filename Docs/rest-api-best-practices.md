@@ -2,7 +2,7 @@
 
 > Cross-references: [Docs Index](INDEX.md) · [API Reference](api-reference.md) · [Architecture](architecture.md)
 
-Eight REST best practices applied to every endpoint in the Gallery Manager API. Each section names the practice, where it lives in the code, and which endpoints use it.
+Nine REST best practices applied to every endpoint in the Gallery Manager API. Each section names the practice, where it lives in the code, and which endpoints use it.
 
 ---
 
@@ -93,5 +93,20 @@ Every endpoint declares its success and error response types via `.Produces<T>()
 
 ---
 
+## 9. Output Caching
+
+Server-side output caching on all versioned API GET endpoints (`/api/v1/...`) using ASP.NET Core's built-in `OutputCache` middleware. Cached responses bypass handler execution entirely for 30 seconds, reducing database round-trips on repeated reads. Cache keys vary by full query string so filtered/paginated/sorted requests cache independently.
+
+| Where | File |
+|-------|------|
+| Cache service + middleware registration | `src/GalleryManager.Api/Program.cs` — `AddOutputCache()`, `UseOutputCache()` |
+| Artworks | `src/GalleryManager.Api/Features/Artworks/GetArtworks.cs` — `.CacheOutput("Short")` |
+| Exhibits | `src/GalleryManager.Api/Features/Exhibits/GetExhibits.cs` — `.CacheOutput("Short")` |
+| Exhibit revenue | `src/GalleryManager.Api/Features/Exhibits/GetExhibitRevenue.cs` — `.CacheOutput("Short")` |
+
+Base policy is `NoCache` (POST/PATCH/DELETE unaffected). Named policy `"Short"`: 30s expiry, `SetVaryByQuery("*")`.
+
+---
+
 ## Last synced
-2026-07-07 — all 8 practices verified working against Neon PostgreSQL via full-stack testing.
+2026-07-08 — all 9 practices verified working against Neon PostgreSQL via full-stack testing.
