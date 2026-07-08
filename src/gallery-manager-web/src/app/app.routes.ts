@@ -1,7 +1,12 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'artworks', pathMatch: 'full' },
+  {
+    path: '',
+    loadComponent: () =>
+      import('./pages/landing-page/landing-page.component').then((m) => m.LandingPageComponent),
+    pathMatch: 'full'
+  },
   {
     path: 'artworks',
     loadComponent: () =>
@@ -12,5 +17,5 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/exhibits-page/exhibits-page.component').then((m) => m.ExhibitsPageComponent)
   },
-  { path: '**', redirectTo: 'artworks' }
+  { path: '**', redirectTo: '' }
 ];

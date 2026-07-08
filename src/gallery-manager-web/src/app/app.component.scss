@@ -24,6 +24,18 @@
   gap: var(--space-3);
 }
 
+.shell-header__brand-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    color: inherit;
+  }
+}
+
 .shell-header__mark {
   display: grid;
   place-items: center;
