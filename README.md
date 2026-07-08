@@ -125,7 +125,7 @@ Nine practices applied across all endpoints:
 | **RFC 7807 Errors** | All errors return `application/problem+json` via `Results.Problem()` |
 | **Rate Limiting** | Fixed window (100 req/min) with `429 Too Many Requests` + `Retry-After` header |
 | **OpenAPI Metadata** | `.Produces<T>()` / `.ProducesProblem()` annotations on all endpoints |
-| **Output Caching** | 30s server-side cache on GET endpoints via `OutputCache` middleware, `VaryByQuery("*")` for filter/pagination isolation |
+| **Output Caching** | 30s server-side cache on `/api/v1` GET endpoints via `OutputCache` middleware, `SetVaryByQuery("*")` for filter/pagination isolation |
 
 Full details: [Docs/rest-api-best-practices.md](Docs/rest-api-best-practices.md)
 
