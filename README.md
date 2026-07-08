@@ -13,11 +13,21 @@
 
 ## Features
 
+### App Features
+
+Domain-facing capabilities — what the gallery actually does with the app.
+
+| Feature | Description | Docs |
+|---------|-------------|------|
+| **Artwork inventory** | Create and list artworks with title, artist, medium, price, and status (Available/OnLoan/Sold); paginated, sortable, filterable by status/artist/medium. | [Docs/features/artwork-inventory.md](Docs/features/artwork-inventory.md) |
+| **Exhibit management** | Create and list exhibits with a date range, assign artworks to an exhibit, and compute total revenue from sold artworks in an exhibit via a Postgres function (`get_exhibit_revenue`) called through EF Core raw SQL. | [Docs/features/exhibit-management.md](Docs/features/exhibit-management.md) |
+
+### Technical Features
+
+Cross-cutting, technology-facing concerns applied across the App Features above.
+
 | Feature | Description | Technical docs |
 |---------|-------------|-----------------|
-| **Artwork inventory** | Create and list artworks with title, artist, medium, price, and status (Available/OnLoan/Sold); paginated, sortable, filterable by status/artist/medium. | [Docs/api-reference.md](Docs/api-reference.md), [Docs/data-access.md](Docs/data-access.md) |
-| **Exhibit management** | Create and list exhibits with a date range, and assign artworks to an exhibit. | [Docs/api-reference.md](Docs/api-reference.md) |
-| **Exhibit revenue calculation** | Computes total revenue from sold artworks in an exhibit via a Postgres function (`get_exhibit_revenue`) called through EF Core raw SQL. | [Docs/data-access.md](Docs/data-access.md) |
 | **Idempotent artwork creation** | `Idempotency-Key` header on `POST /artworks` prevents duplicate creation on client retries. | [Docs/rest-api-best-practices.md](Docs/rest-api-best-practices.md) |
 | **Pagination, sorting & filtering** | Consistent `PagedResponse<T>` shape, whitelisted `sortBy`/`sortDirection`, and query filters across list endpoints. | [Docs/rest-api-best-practices.md](Docs/rest-api-best-practices.md) |
 | **API versioning** | All routes served under `/api/v1/` via `Asp.Versioning.Http`. | [Docs/rest-api-best-practices.md](Docs/rest-api-best-practices.md) |
