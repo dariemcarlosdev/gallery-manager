@@ -1,5 +1,7 @@
--- Run this manually against the DB after EF Core migrations, or wire it into
--- a migration via migrationBuilder.Sql(File.ReadAllText(...)).
+-- This function is now applied automatically via the
+-- AddExhibitRevenueFunction EF Core migration (Migrations/20260708005519_AddExhibitRevenueFunction.cs).
+-- This file remains the readable source of truth; keep both in sync if the
+-- function changes, and update the migration's Up() body accordingly.
 --
 -- Returns each sold artwork's title + sale price for a given exhibit,
 -- used by GET /api/exhibits/{id}/revenue
