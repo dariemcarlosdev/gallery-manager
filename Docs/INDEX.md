@@ -6,6 +6,8 @@
 |---|---|
 | [architecture.md](architecture.md) | System design, request flow, Vertical Slice pattern |
 | [api-reference.md](api-reference.md) | Every HTTP endpoint — method, route, request/response, validation |
+| [rest-api-best-practices.md](rest-api-best-practices.md) | 8 REST best practices — pagination, sorting, filtering, idempotency, versioning, RFC 7807, rate limiting, OpenAPI |
+| [frontend-backend-flow.md](frontend-backend-flow.md) | End-to-end request flow from Angular UI → API → PostgreSQL (worked example: GetArtworks) |
 | [data-access.md](data-access.md) | EF Core model, Postgres schema, the raw-SQL revenue function |
 | [frontend.md](frontend.md) | Angular app structure, services, models, env config |
 | [deployment.md](deployment.md) | GitHub/CI/CD checklist — Render (BE) + Vercel (FE) |

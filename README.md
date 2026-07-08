@@ -1,98 +1,205 @@
 # Gallery Manager API
 
-POC for Park Art gallery interview. Artwork + exhibit inventory management.
+[![API CI](https://github.com/dariemcarlosdev/gallery-manager/actions/workflows/api-ci.yml/badge.svg)](https://github.com/dariemcarlosdev/gallery-manager/actions/workflows/api-ci.yml)
+[![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
+[![Angular 19](https://img.shields.io/badge/Angular-19-DD0031?logo=angular)](https://angular.dev/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-4169E1?logo=postgresql)](https://neon.tech/)
+[![Deployed on Render](https://img.shields.io/badge/API-Render-46E3B7?logo=render)](https://gallery-manager-api.onrender.com/health)
+[![Frontend on Vercel](https://img.shields.io/badge/Frontend-Vercel-000000?logo=vercel)](https://gallery-manager-henna.vercel.app)
 
-Full docs: [Docs/INDEX.md](Docs/INDEX.md) (architecture, API reference, data access, frontend).
+Artwork and exhibit inventory management API for a gallery. Built as a functional POC demonstrating **Vertical Slice Architecture**, **REST API best practices**, and **full-stack .NET + Angular** delivery.
 
-## Stack
+---
 
-- ASP.NET Core 8 Minimal API
-- EF Core 8 + Npgsql (PostgreSQL)
-- Vertical Slice Architecture (each feature owns its endpoint, DTOs, query — no shared repository layer)
-- FluentValidation for request validation
-- Swagger/OpenAPI (dev only)
+## Tech Stack
 
-## Structure
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| **API** | ASP.NET Core 8 Minimal API | Lightweight HTTP endpoints, no controller ceremony |
+| **ORM** | EF Core 8 + Npgsql | Code-first migrations, LINQ queries |
+| **Database** | PostgreSQL (Neon serverless) | Managed Postgres with connection pooling |
+| **Validation** | FluentValidation 11.9 | Inline request validation per endpoint |
+| **Versioning** | Asp.Versioning.Http 8.1 | URL-segment versioning (`/api/v1/`) |
+| **Frontend** | Angular 19 (standalone components) | SPA with signals, lazy-loaded routes |
+| **CI/CD** | GitHub Actions | Build + publish on push to `main` |
+| **Hosting** | Render (API) + Vercel (SPA) | Auto-deploy from `main` branch |
+
+## Architecture
+
+### Vertical Slice
+
+Each feature owns its entire stack — entity, request/response DTOs, validation, and endpoint registration — in a single file under `Features/{Domain}/`. No shared Controllers, Services, or Repositories folders.
 
 ```
-GalleryManager.sln
 src/GalleryManager.Api/
-  Program.cs                 # composition root - wires DbContext, CORS, endpoint mapping
+  Program.cs                          — composition root
+  Common/PaginationParams.cs          — shared pagination, sorting, extension methods
   Data/
-    GalleryDbContext.cs
+    GalleryDbContext.cs               — EF Core context + Fluent API config
     Sql/001_create_get_exhibit_revenue_function.sql
   Features/
     Artworks/
-      Artwork.cs              # entity + status enum
-      GetArtworks.cs           # GET  /api/artworks
-      CreateArtwork.cs         # POST /api/artworks
-      UpdateArtworkStatus.cs   # PATCH /api/artworks/{id}/status
+      Artwork.cs                      — entity + ArtworkStatus enum
+      GetArtworks.cs                  — GET    /api/v1/artworks
+      CreateArtwork.cs                — POST   /api/v1/artworks
+      UpdateArtworkStatus.cs          — PATCH  /api/v1/artworks/{id}/status
     Exhibits/
-      Exhibit.cs
-      GetExhibits.cs                  # GET  /api/exhibits
-      AssignArtworkToExhibit.cs       # POST /api/exhibits/{id}/artworks/{artworkId}
-      GetExhibitRevenue.cs            # GET  /api/exhibits/{id}/revenue (calls Postgres function)
+      Exhibit.cs                      — entity
+      GetExhibits.cs                  — GET    /api/v1/exhibits
+      AssignArtworkToExhibit.cs       — POST   /api/v1/exhibits/{id}/artworks/{artworkId}
+      GetExhibitRevenue.cs            — GET    /api/v1/exhibits/{id}/revenue
 ```
 
-Each feature file is self-contained: request/response records, validation, and the
-`MapEndpoint` call live together instead of being spread across
-Controllers/Services/Repositories layers.
+### Frontend (Angular SPA)
 
-## Local setup (Visual Studio)
+```
+src/gallery-manager-web/src/app/
+  models/         — TypeScript interfaces matching backend DTOs
+  services/       — HttpClient wrappers per domain (ArtworkService, ExhibitService)
+  pages/          — lazy-loaded route components (artworks-page, exhibits-page)
+  environments/   — dev/prod API base URL configuration
+```
 
-1. Open `GalleryManager.sln`.
-2. NuGet restore should run automatically on load; if not, right-click solution →
-   Restore NuGet Packages.
-3. Postgres is hosted on [Neon](https://neon.tech) (project `gallery-manager`, db
-   `gallerymanager`) — no local Postgres/Docker needed. Get the connection string from
-   the Neon console (or `neonctl`/MCP) and set it via user secrets (never commit it to
-   `appsettings.json`):
+### System Diagram
+
+```
+┌───────────────────┐     HTTPS/JSON      ┌─────────────────────────┐     Npgsql      ┌────────────────┐
+│  Angular 19 SPA   │ ──────────────────▶  │  ASP.NET Core 8 API    │ ──────────────▶  │  PostgreSQL    │
+│  (Vercel)         │ ◀──────────────────  │  (Render)              │ ◀──────────────  │  (Neon)        │
+└───────────────────┘                      └─────────────────────────┘                  └────────────────┘
+```
+
+No API gateway, message queue, or cache layer — a 2-entity POC doesn't need them.
+
+## Architectural Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| **Vertical Slice over Clean Architecture layers** | Feature cohesion > layer separation at this scale. One folder = one feature = one place to look. |
+| **Minimal API over MVC controllers** | Lighter boilerplate, direct route-to-handler mapping, aligns with .NET 8 direction. |
+| **Direct DbContext injection** | No repository abstraction — 2 entities don't justify the indirection. |
+| **FluentValidation inline** | Validator lives next to the handler it validates. No pipeline behavior middleware. |
+| **Raw SQL for revenue calculation** | `GetExhibitRevenue` calls a Postgres function via `FromSqlInterpolated` — demonstrates SQL comfort alongside ORM fluency. |
+| **URL-segment versioning** | `/api/v1/` is explicit, cache-friendly, and visible in every request. |
+| **Offset pagination over cursor** | Simpler for a POC. Cursor pagination would be the next step at scale. |
+| **Neon serverless Postgres** | Zero-ops managed database, free tier, no local Docker needed. |
+
+## REST API Best Practices
+
+Eight practices applied across all endpoints:
+
+| Practice | Implementation |
+|----------|---------------|
+| **Pagination** | `PagedResponse<T>` wrapper with `page`, `pageSize`, `totalCount`, `totalPages`, `hasNextPage`, `hasPreviousPage` |
+| **Sorting** | `sortBy` + `sortDirection` query params with whitelisted field dictionaries per endpoint |
+| **Filtering** | Domain-specific query filters (`?status=`, `?artist=`, `?medium=`, `?name=`) using PostgreSQL `ILike` |
+| **Idempotency** | `Idempotency-Key` HTTP header on `POST /artworks` — returns existing resource on duplicate key |
+| **API Versioning** | URL segment `/api/v1/` via `Asp.Versioning.Http` |
+| **RFC 7807 Errors** | All errors return `application/problem+json` via `Results.Problem()` |
+| **Rate Limiting** | Fixed window (100 req/min) with `429 Too Many Requests` + `Retry-After` header |
+| **OpenAPI Metadata** | `.Produces<T>()` / `.ProducesProblem()` annotations on all endpoints |
+
+Full details: [Docs/rest-api-best-practices.md](Docs/rest-api-best-practices.md)
+
+## API Endpoints
+
+All routes are versioned under `/api/v1/`.
+
+| Method | Route | Description |
+|--------|-------|-------------|
+| `GET` | `/api/v1/artworks` | List artworks (paginated, sortable, filterable) |
+| `POST` | `/api/v1/artworks` | Create artwork (idempotency-key support) |
+| `PATCH` | `/api/v1/artworks/{id}/status` | Update artwork status |
+| `GET` | `/api/v1/exhibits` | List exhibits (paginated, sortable, filterable) |
+| `POST` | `/api/v1/exhibits/{id}/artworks/{artworkId}` | Assign artwork to exhibit |
+| `GET` | `/api/v1/exhibits/{id}/revenue` | Get exhibit revenue (Postgres function) |
+| `GET` | `/health` | Health check |
+
+Full reference: [Docs/api-reference.md](Docs/api-reference.md)
+
+## Data Model
+
+Two entities with a one-to-many relationship:
+
+- **Artwork** — `Id`, `Title`, `Artist`, `Medium`, `Price`, `Status` (Available/OnLoan/Sold), `ExhibitId?`, `IdempotencyKey?`, `CreatedAtUtc`
+- **Exhibit** — `Id`, `Name`, `StartDate`, `EndDate`, `Artworks` (navigation)
+
+`get_exhibit_revenue(exhibit_id)` is a Postgres function that calculates total revenue from sold artworks in an exhibit. Defined in `Data/Sql/001_create_get_exhibit_revenue_function.sql`.
+
+## Local Setup
+
+**Prerequisites:** .NET 8 SDK, Node.js 18+, `dotnet-ef` global tool
+
+1. Clone and restore:
+   ```bash
+   git clone https://github.com/dariemcarlosdev/gallery-manager.git
+   cd gallery-manager
+   dotnet restore GalleryManager.sln
    ```
-   dotnet user-secrets set "ConnectionStrings:GalleryDb" "..." --project src/GalleryManager.Api
+
+2. Configure database connection (Neon Postgres — no local Docker needed):
+   ```bash
+   dotnet user-secrets set "ConnectionStrings:GalleryDb" "<your-neon-connection-string>" \
+     --project src/GalleryManager.Api
    ```
-4. The `InitialCreate` migration is already committed. Apply it against Neon:
-   ```
+
+3. Apply migrations:
+   ```bash
    dotnet ef database update --project src/GalleryManager.Api
    ```
-   (Requires `dotnet tool install --global dotnet-ef` if not already installed. Only
-   run `dotnet ef migrations add <Name>` again if you change the EF Core model.)
-5. Run the Postgres function script once against your DB (already applied on the
-   shared Neon instance, only needed for a fresh DB):
-   `Data/Sql/001_create_get_exhibit_revenue_function.sql`
-6. F5 in Visual Studio — Swagger UI opens at `/swagger`.
 
-## Frontend
+4. Run the revenue function script against your DB (one-time):
+   `src/GalleryManager.Api/Data/Sql/001_create_get_exhibit_revenue_function.sql`
 
-Angular 19 app scaffolded at `src/gallery-manager-web/`. Run:
-```
-cd src/gallery-manager-web
-npm install
-npx ng serve
-```
-Talks to the API via `ArtworkService`/`ExhibitService` (`src/app/services/`), base URL set in
-`src/environments/environment.development.ts` (defaults to `https://localhost:7080/api`, matching
-`launchSettings.json`).
+5. Start the API:
+   ```bash
+   dotnet run --project src/GalleryManager.Api
+   ```
+   Swagger UI at `/swagger` (dev environment only).
 
-## Deployment note
+6. Start the frontend:
+   ```bash
+   cd src/gallery-manager-web
+   npm install
+   npx ng serve
+   ```
+   Dev server defaults to `http://localhost:4200`. CORS is pre-configured for ports 4200, 4301, 4302.
 
-Frontend (Angular) deploys to Vercel. This API does **not** —
-Vercel has no .NET runtime, so the API needs a separate host (Render, Fly.io,
-or Azure App Service are the common free/cheap options). `.github/workflows/api-ci.yml`
-builds/publishes on every push to `main`; the deploy step is a placeholder until
-a host is picked.
+## CI/CD Pipeline
 
-## Why this shape, for the interview
+GitHub Actions workflow (`.github/workflows/api-ci.yml`):
 
-- **Vertical Slice**: mirrors the job's ask directly — one folder per feature,
-  easy to point at and say "here's everything for creating an artwork, in one place."
-- **Minimal API**: matches "lightweight" API design requirement, no MVC controller
-  ceremony.
-- **Raw SQL function call** (`GetExhibitRevenue`): deliberately not hidden behind
-  pure LINQ — shows comfort writing and calling actual SQL/stored-logic, which the
-  JD calls out as the #1 skill ("2+ years SQL Server — this is key!").
-- **EF Core Code-First** for the rest: shows ORM fluency without pretending raw
-  SQL is the only tool in the box.
+1. **Build & Publish** — Restore → Build (Release) → Publish → Upload artifact
+2. **Deploy** — On `main` push, triggers Render deploy hook (Render builds from Dockerfile server-side)
+
+Frontend auto-deploys to Vercel on push to `main` via Vercel's GitHub integration.
 
 ## Deployment
 
-Backend deploys to Render (Docker), frontend to Vercel. See .github/workflows/api-ci.yml.
+| Component | Host | URL |
+|-----------|------|-----|
+| API | Render (Docker) | `https://gallery-manager-api.onrender.com` |
+| Frontend | Vercel | `https://gallery-manager-henna.vercel.app` |
+| Database | Neon | Serverless PostgreSQL (connection-pooled) |
+
+## Documentation
+
+| Doc | Covers |
+|-----|--------|
+| [Docs/INDEX.md](Docs/INDEX.md) | Documentation index and scope rules |
+| [Docs/architecture.md](Docs/architecture.md) | System design, request flow, vertical slice pattern |
+| [Docs/api-reference.md](Docs/api-reference.md) | Full endpoint reference with request/response shapes |
+| [Docs/rest-api-best-practices.md](Docs/rest-api-best-practices.md) | 8 REST practices with file references |
+| [Docs/frontend-backend-flow.md](Docs/frontend-backend-flow.md) | End-to-end request flow from UI to DB |
+| [Docs/data-access.md](Docs/data-access.md) | EF Core model, Postgres schema, revenue function |
+| [Docs/frontend.md](Docs/frontend.md) | Angular app structure, services, design tokens |
+| [Docs/deployment.md](Docs/deployment.md) | CI/CD and hosting setup |
+
+## Design Rationale (Interview Context)
+
+- **Vertical Slice** mirrors the job description directly — "here's everything for [feature] in one place"
+- **Minimal API** — lightweight, no MVC ceremony, aligns with modern .NET
+- **Raw SQL function** in `GetExhibitRevenue` — demonstrates SQL fluency (the JD's #1 skill)
+- **EF Core Code-First** for CRUD — shows ORM proficiency without pretending raw SQL is the only tool
+- **REST best practices** — pagination, sorting, filtering, idempotency, versioning, RFC 7807 errors, rate limiting — production-grade API design on a POC-scale project
+- **Full-stack delivery** — API + Angular SPA + CI/CD + cloud hosting, end to end

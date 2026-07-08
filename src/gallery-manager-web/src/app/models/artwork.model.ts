@@ -20,6 +20,9 @@ export interface CreateArtworkRequest {
 export interface CreateArtworkResponse {
   id: number;
   title: string;
+  artist: string;
+  medium: string;
+  price: number;
   status: ArtworkStatus;
 }
 

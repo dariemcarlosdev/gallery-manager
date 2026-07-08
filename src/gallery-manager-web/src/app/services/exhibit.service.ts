@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Exhibit, ExhibitRevenue } from '../models/exhibit.model';
+import { PagedResponse } from '../models/paged-response.model';
 
 @Injectable({ providedIn: 'root' })
 export class ExhibitService {
@@ -11,7 +12,9 @@ export class ExhibitService {
   constructor(private readonly http: HttpClient) {}
 
   getExhibits(): Observable<Exhibit[]> {
-    return this.http.get<Exhibit[]>(this.baseUrl);
+    return this.http
+      .get<PagedResponse<Exhibit>>(this.baseUrl)
+      .pipe(map(res => res.data));
   }
 
   assignArtwork(exhibitId: number, artworkId: number): Observable<void> {

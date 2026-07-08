@@ -1,6 +1,6 @@
 # Architecture
 
-> Cross-references: [Docs Index](INDEX.md) · [API Reference](api-reference.md) · [Data Access](data-access.md) · [Frontend](frontend.md)
+> Cross-references: [Docs Index](INDEX.md) · [API Reference](api-reference.md) · [Data Access](data-access.md) · [Frontend](frontend.md) · [REST Best Practices](rest-api-best-practices.md) · [Frontend–Backend Flow](frontend-backend-flow.md)
 
 ## System Design
 
@@ -10,8 +10,8 @@ Two deployables, one datastore:
 ┌─────────────────────┐        HTTPS/JSON        ┌──────────────────────────┐
 │  Angular 19 SPA      │ ───────────────────────▶ │  ASP.NET Core 8 Minimal   │
 │  gallery-manager-web │ ◀─────────────────────── │  API — GalleryManager.Api │
-│  (Vercel)            │                          │  (Render/Fly.io/Azure —   │
-└──────────────────────┘                          │   not yet picked)         │
+│  (Vercel)            │                          │  (Render — Docker)        │
+└──────────────────────┘                          │                           │
                                                     └────────────┬─────────────┘
                                                                  │ Npgsql (EF Core)
                                                                  ▼
@@ -29,29 +29,34 @@ No API gateway, no message queue, no cache layer — a 2-table POC doesn't need 
 | Step | Component |
 |---|---|
 | 1 | Angular `ArtworkService.createArtwork()` → `HttpClient.post` |
-| 2 | Minimal API route `POST /api/artworks` (`CreateArtwork.MapEndpoint`) |
-| 3 | Inline `FluentValidation` validator runs against `Request` |
-| 4 | On valid: new `Artwork` entity built, `db.SaveChangesAsync()` |
-| 5 | `201 Created` with `Response` DTO returned |
+| 2 | Middleware pipeline: CORS → HTTPS redirect → rate limiter → route matching |
+| 3 | Versioned route group `/api/v1/` → `POST /api/v1/artworks` (`CreateArtwork.MapEndpoint`) |
+| 4 | Optional `Idempotency-Key` header checked — if duplicate, return existing resource (200) |
+| 5 | Inline `FluentValidation` validator runs against `Request` |
+| 6 | On valid: new `Artwork` entity built, `db.SaveChangesAsync()` |
+| 7 | `201 Created` with `Response` DTO returned |
 
-No pipeline behaviors, no MediatR, no separate command/handler split — the whole flow lives in one file.
+No pipeline behaviors, no MediatR, no separate command/handler split — the whole flow lives in one file. For the full downstream trace, see [Frontend–Backend Flow](frontend-backend-flow.md).
 
 ## Vertical Slice Architecture
 
 Each feature folder is self-contained: entity, request/response records, validator, and endpoint registration all live in one or two files under `Features/{Domain}/`. There is no cross-cutting Controllers/Services/Repositories layer.
 
 ```
+Common/
+  PaginationParams.cs              — shared PagedRequest, PagedResponse<T>, sorting/pagination extensions
+
 Features/Artworks/
-  Artwork.cs              — entity + status enum
-  GetArtworks.cs           — GET  /api/artworks
-  CreateArtwork.cs         — POST /api/artworks
-  UpdateArtworkStatus.cs   — PATCH /api/artworks/{id}/status
+  Artwork.cs              — entity + ArtworkStatus enum + IdempotencyKey
+  GetArtworks.cs           — GET    /api/v1/artworks  (paginated, sortable, filterable)
+  CreateArtwork.cs         — POST   /api/v1/artworks  (idempotency-key support)
+  UpdateArtworkStatus.cs   — PATCH  /api/v1/artworks/{id}/status
 
 Features/Exhibits/
   Exhibit.cs
-  GetExhibits.cs                  — GET  /api/exhibits
-  AssignArtworkToExhibit.cs       — POST /api/exhibits/{id}/artworks/{artworkId}
-  GetExhibitRevenue.cs            — GET  /api/exhibits/{id}/revenue
+  GetExhibits.cs                  — GET    /api/v1/exhibits  (paginated, sortable, filterable)
+  AssignArtworkToExhibit.cs       — POST   /api/v1/exhibits/{id}/artworks/{artworkId}
+  GetExhibitRevenue.cs            — GET    /api/v1/exhibits/{id}/revenue
 ```
 
 **Why**: mirrors "vertical slice" directly for the interview — point at one folder, that's the whole feature. See [Data Access](data-access.md) for why `GetExhibitRevenue` calls raw SQL instead of LINQ.

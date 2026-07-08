@@ -5,39 +5,48 @@ namespace GalleryManager.Api.Features.Exhibits;
 
 public static class GetExhibitRevenue
 {
-    // Maps 1:1 to columns returned by the get_exhibit_revenue() Postgres function.
-    // See Data/Sql/001_create_get_exhibit_revenue_function.sql
     public class RevenueRow
     {
         public string ArtworkTitle { get; set; } = string.Empty;
         public decimal SalePrice { get; set; }
     }
 
-    public record Response(string ArtworkTitle, decimal SalePrice);
+    public record LineItem(string ArtworkTitle, decimal SalePrice);
+    public record Response(int ExhibitId, decimal Total, IReadOnlyList<LineItem> Lines);
 
     public static void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/exhibits/{exhibitId:int}/revenue", async (
+        app.MapGet("/exhibits/{exhibitId:int}/revenue", async (
             int exhibitId,
             GalleryDbContext db,
             CancellationToken ct) =>
         {
+            var exhibitExists = await db.Exhibits
+                .AsNoTracking()
+                .AnyAsync(e => e.Id == exhibitId, ct);
+
+            if (!exhibitExists)
+            {
+                return Results.Problem(
+                    detail: $"Exhibit with id {exhibitId} was not found.",
+                    statusCode: StatusCodes.Status404NotFound,
+                    title: "Exhibit not found");
+            }
+
             var rows = await db.Database
                 .SqlQuery<RevenueRow>(
                     $"SELECT * FROM get_exhibit_revenue({exhibitId})")
                 .ToListAsync(ct);
 
             var total = rows.Sum(r => r.SalePrice);
+            var lines = rows.Select(r => new LineItem(r.ArtworkTitle, r.SalePrice)).ToList();
 
-            return Results.Ok(new
-            {
-                exhibitId,
-                total,
-                lines = rows.Select(r => new Response(r.ArtworkTitle, r.SalePrice))
-            });
+            return Results.Ok(new Response(exhibitId, total, lines));
         })
         .WithName("GetExhibitRevenue")
         .WithTags("Exhibits")
-        .Produces(StatusCodes.Status200OK);
+        .Produces<Response>(StatusCodes.Status200OK)
+        .ProducesProblem(StatusCodes.Status404NotFound)
+        .Produces(StatusCodes.Status429TooManyRequests);
     }
 }

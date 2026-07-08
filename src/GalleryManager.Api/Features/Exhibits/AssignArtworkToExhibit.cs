@@ -8,7 +8,7 @@ public static class AssignArtworkToExhibit
 {
     public static void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("/api/exhibits/{exhibitId:int}/artworks/{artworkId:int}", async (
+        app.MapPost("/exhibits/{exhibitId:int}/artworks/{artworkId:int}", async (
             int exhibitId,
             int artworkId,
             GalleryDbContext db,
@@ -17,14 +17,23 @@ public static class AssignArtworkToExhibit
             var exhibit = await db.Exhibits.FirstOrDefaultAsync(e => e.Id == exhibitId, ct);
             if (exhibit is null)
             {
-                return Results.NotFound(new { error = "Exhibit not found." });
+                return Results.Problem(
+                    detail: $"Exhibit with id {exhibitId} was not found.",
+                    statusCode: StatusCodes.Status404NotFound,
+                    title: "Exhibit not found");
             }
 
             var artwork = await db.Artworks.FirstOrDefaultAsync(a => a.Id == artworkId, ct);
             if (artwork is null)
             {
-                return Results.NotFound(new { error = "Artwork not found." });
+                return Results.Problem(
+                    detail: $"Artwork with id {artworkId} was not found.",
+                    statusCode: StatusCodes.Status404NotFound,
+                    title: "Artwork not found");
             }
+
+            if (artwork.ExhibitId == exhibitId)
+                return Results.NoContent();
 
             artwork.ExhibitId = exhibitId;
             await db.SaveChangesAsync(ct);
@@ -34,6 +43,7 @@ public static class AssignArtworkToExhibit
         .WithName("AssignArtworkToExhibit")
         .WithTags("Exhibits")
         .Produces(StatusCodes.Status204NoContent)
-        .Produces(StatusCodes.Status404NotFound);
+        .ProducesProblem(StatusCodes.Status404NotFound)
+        .Produces(StatusCodes.Status429TooManyRequests);
     }
 }

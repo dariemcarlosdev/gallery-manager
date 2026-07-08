@@ -16,6 +16,10 @@ public class GalleryDbContext(DbContextOptions<GalleryDbContext> options) : DbCo
             entity.ToTable("artworks");
             entity.Property(a => a.Status).HasConversion<string>();
             entity.Property(a => a.Price).HasColumnType("numeric(10,2)");
+            entity.Property(a => a.IdempotencyKey).HasMaxLength(64);
+            entity.HasIndex(a => a.IdempotencyKey)
+                .IsUnique()
+                .HasFilter("\"IdempotencyKey\" IS NOT NULL");
         });
 
         modelBuilder.Entity<Exhibit>(entity =>

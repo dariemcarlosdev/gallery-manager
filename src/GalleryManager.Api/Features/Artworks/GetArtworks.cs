@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+using GalleryManager.Api.Common;
 using GalleryManager.Api.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,12 +16,26 @@ public static class GetArtworks
         string Status,
         int? ExhibitId);
 
+    private static readonly Dictionary<string, Expression<Func<Artwork, object>>> SortableFields = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["title"] = a => a.Title,
+        ["artist"] = a => a.Artist,
+        ["price"] = a => a.Price,
+        ["createdAtUtc"] = a => a.CreatedAtUtc
+    };
+
     public static void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/artworks", async (
+        app.MapGet("/artworks", async (
             GalleryDbContext db,
             string? status,
-            CancellationToken ct) =>
+            string? artist,
+            string? medium,
+            string? sortBy,
+            string? sortDirection,
+            int page = 1,
+            int pageSize = 20,
+            CancellationToken ct = default) =>
         {
             var query = db.Artworks.AsNoTracking().AsQueryable();
 
@@ -29,16 +45,29 @@ public static class GetArtworks
                 query = query.Where(a => a.Status == parsedStatus);
             }
 
-            var artworks = await query
-                .OrderByDescending(a => a.CreatedAtUtc)
+            if (!string.IsNullOrWhiteSpace(artist))
+                query = query.Where(a => EF.Functions.ILike(a.Artist, $"%{artist}%"));
+
+            if (!string.IsNullOrWhiteSpace(medium))
+                query = query.Where(a => EF.Functions.ILike(a.Medium, $"%{medium}%"));
+
+            query = query.ApplySorting(sortBy, sortDirection ?? "asc", SortableFields);
+
+            if (string.IsNullOrWhiteSpace(sortBy))
+                query = query.OrderByDescending(a => a.CreatedAtUtc);
+
+            var paged = new PagedRequest(page, pageSize);
+
+            var result = await query
                 .Select(a => new Response(
                     a.Id, a.Title, a.Artist, a.Medium, a.Price, a.Status.ToString(), a.ExhibitId))
-                .ToListAsync(ct);
+                .ToPagedResponseAsync(paged.Page, paged.PageSize, ct);
 
-            return Results.Ok(artworks);
+            return Results.Ok(result);
         })
         .WithName("GetArtworks")
         .WithTags("Artworks")
-        .Produces<List<Response>>(StatusCodes.Status200OK);
+        .Produces<PagedResponse<Response>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status429TooManyRequests);
     }
 }
