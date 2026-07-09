@@ -23,6 +23,37 @@
   margin: 0;
 }
 
+.exhibit-card__status {
+  list-style: none;
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-size: 0.8rem;
+  color: var(--color-ink-muted);
+}
+
+.status-chip {
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-line);
+
+  &--available {
+    color: var(--color-ink);
+  }
+
+  &--onloan {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  &--sold {
+    color: var(--color-ink-muted);
+    text-decoration: line-through;
+  }
+}
+
 .exhibit-card__actions {
   display: flex;
   align-items: center;

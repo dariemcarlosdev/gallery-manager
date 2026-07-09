@@ -1,13 +1,22 @@
 using System.Linq.Expressions;
 using GalleryManager.Api.Common;
 using GalleryManager.Api.Data;
+using GalleryManager.Api.Features.Artworks;
 using Microsoft.EntityFrameworkCore;
 
 namespace GalleryManager.Api.Features.Exhibits;
 
 public static class GetExhibits
 {
-    public record Response(int Id, string Name, DateOnly StartDate, DateOnly EndDate);
+    public record Response(
+        int Id,
+        string Name,
+        DateOnly StartDate,
+        DateOnly EndDate,
+        int ArtworkCount,
+        int AvailableCount,
+        int OnLoanCount,
+        int SoldCount);
 
     private static readonly Dictionary<string, Expression<Func<Exhibit, object>>> SortableFields = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -40,7 +49,15 @@ public static class GetExhibits
             var paged = new PagedRequest { Page = page, PageSize = pageSize };
 
             var result = await query
-                .Select(e => new Response(e.Id, e.Name, e.StartDate, e.EndDate))
+                .Select(e => new Response(
+                    e.Id,
+                    e.Name,
+                    e.StartDate,
+                    e.EndDate,
+                    e.Artworks.Count,
+                    e.Artworks.Count(a => a.Status == ArtworkStatus.Available),
+                    e.Artworks.Count(a => a.Status == ArtworkStatus.OnLoan),
+                    e.Artworks.Count(a => a.Status == ArtworkStatus.Sold)))
                 .ToPagedResponseAsync(paged.EffectivePage, paged.EffectivePageSize, ct);
 
             return Results.Ok(result);

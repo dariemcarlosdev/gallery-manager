@@ -3,6 +3,10 @@ export interface Exhibit {
   name: string;
   startDate: string;
   endDate: string;
+  artworkCount: number;
+  availableCount: number;
+  onLoanCount: number;
+  soldCount: number;
 }
 
 export interface ExhibitRevenueLine {
