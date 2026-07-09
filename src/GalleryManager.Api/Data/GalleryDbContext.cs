@@ -25,6 +25,10 @@ public class GalleryDbContext(DbContextOptions<GalleryDbContext> options) : DbCo
         modelBuilder.Entity<Exhibit>(entity =>
         {
             entity.ToTable("exhibits");
+            entity.HasMany(e => e.Artworks)
+                .WithOne()
+                .HasForeignKey(a => a.ExhibitId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         base.OnModelCreating(modelBuilder);

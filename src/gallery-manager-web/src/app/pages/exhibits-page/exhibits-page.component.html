@@ -20,6 +20,12 @@
             <div class="exhibit-card__main">
               <h3>{{ exhibit.name }}</h3>
               <p class="exhibit-card__dates">{{ exhibit.startDate }} – {{ exhibit.endDate }}</p>
+              <ul class="exhibit-card__status">
+                <li>{{ exhibit.artworkCount }} artwork{{ exhibit.artworkCount === 1 ? '' : 's' }}</li>
+                <li class="status-chip status-chip--available">{{ exhibit.availableCount }} available</li>
+                <li class="status-chip status-chip--onloan">{{ exhibit.onLoanCount }} on loan</li>
+                <li class="status-chip status-chip--sold">{{ exhibit.soldCount }} sold</li>
+              </ul>
             </div>
             <div class="exhibit-card__actions">
               <input
