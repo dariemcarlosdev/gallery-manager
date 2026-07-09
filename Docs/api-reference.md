@@ -86,7 +86,7 @@
 | `sortDirection` | string | `asc` | `asc` or `desc` |
 | `name` | string | — | Case-insensitive partial match on exhibit name |
 
-**Response:** `200 OK` — `PagedResponse<Response>` with shape `{ id, name, startDate, endDate }` per item.
+**Response:** `200 OK` — `PagedResponse<Response>` with shape `{ id, name, startDate, endDate, artworkCount, availableCount, onLoanCount, soldCount }` per item.
 
 **File:** `src/GalleryManager.Api/Features/Exhibits/GetExhibits.cs`
 
@@ -128,4 +128,4 @@ All errors use RFC 7807 Problem Details (`application/problem+json`):
 | `429` | Rate limit exceeded (100 req/min) | `Results.Problem()` + `Retry-After: 60` header |
 
 ## Last synced
-2026-07-07 — routes versioned to `/api/v1/`, all endpoints updated with pagination, sorting, filtering, idempotency, and RFC 7807 errors.
+2026-07-08 — `GetExhibits` response extended with `artworkCount`/`availableCount`/`onLoanCount`/`soldCount` (exhibit↔artwork EF relation).

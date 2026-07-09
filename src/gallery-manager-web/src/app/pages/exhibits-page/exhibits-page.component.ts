@@ -76,6 +76,7 @@ export class ExhibitsPageComponent {
         next: () => {
           this.assigning.set(null);
           this.assignArtworkIdByExhibit.update((map) => ({ ...map, [exhibit.id]: null }));
+          this.load();
         },
         error: () => {
           this.assigning.set(null);
