@@ -25,7 +25,7 @@ import { RouterLink } from '@angular/router';
       </div>
 
       <div class="site-footer__base">
-        <p class="site-footer__copy">&copy; 2026 Gallery Manager · A portfolio project by Dariem Macias</p>
+        <p class="site-footer__copy">&copy; Gallery Manager · A portfolio project by Dariem Macias</p>
       </div>
     </footer>
   `,
