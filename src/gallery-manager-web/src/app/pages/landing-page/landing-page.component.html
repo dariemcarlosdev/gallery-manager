@@ -1,6 +1,6 @@
 <!-- ═══ HERO ═══ -->
 <section class="hero">
-  <div class="hero__parallax-bg">
+  <div class="hero__art" aria-hidden="true">
     <div class="hero__frame hero__frame--1">
       <div class="hero__canvas hero__canvas--abstract-1"></div>
     </div>
@@ -10,21 +10,20 @@
     <div class="hero__frame hero__frame--3">
       <div class="hero__canvas hero__canvas--abstract-3"></div>
     </div>
-    <div class="hero__frame hero__frame--4">
-      <div class="hero__canvas hero__canvas--abstract-4"></div>
-    </div>
-    <div class="hero__orb hero__orb--1"></div>
-    <div class="hero__orb hero__orb--2"></div>
   </div>
 
   <div class="hero__content">
-    <span class="hero__eyebrow">Artwork Inventory &amp; Exhibit Management</span>
+    <span class="hero__eyebrow">
+      <span class="hero__eyebrow-rule"></span>
+      Artwork Inventory &amp; Exhibit Management
+    </span>
     <h1 class="hero__title">
       Where Art Meets<br>
       <span class="hero__title-accent">Precision</span>
     </h1>
     <p class="hero__subtitle">
-      Track every piece. Curate every exhibit. Know your revenue — down to the last brushstroke.
+      Track every piece. Curate every exhibit. Know your revenue —
+      with the composure a serious collection deserves.
     </p>
     <div class="hero__actions">
       <a routerLink="/artworks" class="hero__btn hero__btn--primary">
@@ -35,8 +34,8 @@
     </div>
   </div>
 
-  <div class="hero__scroll-hint">
-    <span>Scroll to discover</span>
+  <div class="hero__scroll-hint" aria-hidden="true">
+    <span>Scroll</span>
     <div class="hero__scroll-line"></div>
   </div>
 </section>
@@ -53,73 +52,51 @@
       </p>
     </div>
 
-    <div class="features__grid">
-      <div class="feature-card" appScrollReveal [revealDelay]="0">
-        <div class="feature-card__icon">
-          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="6" y="6" width="36" height="36" rx="4" stroke="currentColor" stroke-width="2"/>
-            <rect x="12" y="12" width="24" height="24" rx="2" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 3"/>
-            <circle cx="24" cy="24" r="6" stroke="currentColor" stroke-width="1.5"/>
-          </svg>
+    <ul class="features__list">
+      <li class="feature-row" appScrollReveal [revealDelay]="0">
+        <span class="feature-row__index">01</span>
+        <div class="feature-row__body">
+          <h3 class="feature-row__title">Artwork Inventory</h3>
+          <p class="feature-row__desc">
+            Record each piece's title, artist, medium, and price. Track status from
+            available to on loan to sold — all in one place.
+          </p>
         </div>
-        <h3 class="feature-card__title">Artwork Inventory</h3>
-        <p class="feature-card__desc">
-          Record each piece's title, artist, medium, and price. Track status from
-          available to on loan to sold — all in one place.
-        </p>
-      </div>
+      </li>
 
-      <div class="feature-card" appScrollReveal [revealDelay]="120">
-        <div class="feature-card__icon">
-          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="4" y="10" width="16" height="28" rx="2" stroke="currentColor" stroke-width="2"/>
-            <rect x="24" y="6" width="20" height="36" rx="2" stroke="currentColor" stroke-width="2"/>
-            <line x1="28" y1="14" x2="40" y2="14" stroke="currentColor" stroke-width="1.5"/>
-            <line x1="28" y1="20" x2="40" y2="20" stroke="currentColor" stroke-width="1.5"/>
-            <rect x="8" y="16" width="8" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/>
-          </svg>
+      <li class="feature-row" appScrollReveal [revealDelay]="90">
+        <span class="feature-row__index">02</span>
+        <div class="feature-row__body">
+          <h3 class="feature-row__title">Exhibit Management</h3>
+          <p class="feature-row__desc">
+            Group artworks into timed exhibits with start and end dates.
+            Assign pieces seamlessly and view complete exhibit lineups.
+          </p>
         </div>
-        <h3 class="feature-card__title">Exhibit Management</h3>
-        <p class="feature-card__desc">
-          Group artworks into timed exhibits with start and end dates.
-          Assign pieces seamlessly and view complete exhibit lineups.
-        </p>
-      </div>
+      </li>
 
-      <div class="feature-card" appScrollReveal [revealDelay]="240">
-        <div class="feature-card__icon">
-          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8 36 L16 24 L22 30 L32 16 L40 22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="40" cy="22" r="3" stroke="currentColor" stroke-width="1.5"/>
-            <line x1="8" y1="40" x2="40" y2="40" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
-            <line x1="8" y1="12" x2="8" y2="40" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
-          </svg>
+      <li class="feature-row" appScrollReveal [revealDelay]="180">
+        <span class="feature-row__index">03</span>
+        <div class="feature-row__body">
+          <h3 class="feature-row__title">Revenue Analytics</h3>
+          <p class="feature-row__desc">
+            Calculate exactly how much revenue an exhibit generated from sold
+            pieces. Real-time totals, per-artwork breakdowns — no guesswork.
+          </p>
         </div>
-        <h3 class="feature-card__title">Revenue Analytics</h3>
-        <p class="feature-card__desc">
-          Calculate exactly how much revenue an exhibit generated from sold
-          pieces. Real-time totals, per-artwork breakdowns — no guesswork.
-        </p>
-      </div>
+      </li>
 
-      <div class="feature-card" appScrollReveal [revealDelay]="360">
-        <div class="feature-card__icon">
-          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 8 L12 40 L36 40" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M18 32 L18 24" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-            <path d="M24 32 L24 18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-            <path d="M30 32 L30 14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-            <circle cx="36" cy="12" r="4" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M34 14 L30 18" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 2"/>
-          </svg>
+      <li class="feature-row" appScrollReveal [revealDelay]="270">
+        <span class="feature-row__index">04</span>
+        <div class="feature-row__body">
+          <h3 class="feature-row__title">Smart Filtering</h3>
+          <p class="feature-row__desc">
+            Search by artist, medium, or status. Sort by price, date, or title.
+            Paginated results keep everything fast — even with large collections.
+          </p>
         </div>
-        <h3 class="feature-card__title">Smart Filtering</h3>
-        <p class="feature-card__desc">
-          Search by artist, medium, or status. Sort by price, date, or title.
-          Paginated results keep everything fast — even with large collections.
-        </p>
-      </div>
-    </div>
+      </li>
+    </ul>
   </div>
 </section>
 
@@ -127,6 +104,7 @@
 <section class="cta" appScrollReveal revealDirection="none">
   <div class="cta__container">
     <div class="cta__frame-accent"></div>
+    <span class="cta__eyebrow">Begin</span>
     <h2 class="cta__title">Ready to Curate?</h2>
     <p class="cta__text">
       Start managing your gallery's collection with the precision it deserves.
@@ -137,30 +115,3 @@
     </a>
   </div>
 </section>
-
-<!-- ═══ FOOTER ═══ -->
-<footer class="landing-footer">
-  <div class="landing-footer__container">
-    <div class="landing-footer__brand">
-      <span class="landing-footer__mark">GM</span>
-      <span class="landing-footer__name">Gallery Manager</span>
-    </div>
-
-    <div class="landing-footer__links">
-      <a routerLink="/artworks">Artworks</a>
-      <a routerLink="/exhibits">Exhibits</a>
-      <a href="https://github.com/dariemcarlosdev/gallery-manager" target="_blank" rel="noopener noreferrer" class="landing-footer__github">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-        <span>GitHub</span>
-      </a>
-    </div>
-
-    <div class="landing-footer__craft">
-      <p>Crafted with obsessive attention & unreasonable amounts of ☕</p>
-    </div>
-
-    <div class="landing-footer__copy">
-      <p>&copy; 2026 Gallery Manager. A portfolio project by Dariem Macias.</p>
-    </div>
-  </div>
-</footer>
