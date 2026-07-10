@@ -27,6 +27,13 @@ export class ArtworkService {
       .pipe(map(res => res.data));
   }
 
+  /** Returns the total artwork count from the paged envelope. */
+  getCount(): Observable<number> {
+    return this.http
+      .get<PagedResponse<Artwork>>(this.baseUrl)
+      .pipe(map(res => res.totalCount));
+  }
+
   /** Creates an artwork. */
   createArtwork(request: CreateArtworkRequest): Observable<CreateArtworkResponse> {
     return this.http.post<CreateArtworkResponse>(this.baseUrl, request);

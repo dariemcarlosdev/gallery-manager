@@ -1,47 +1,73 @@
 <!-- ═══ HERO ═══ -->
 <section class="hero">
-  <div class="hero__art" aria-hidden="true">
-    <div class="hero__frame hero__frame--1">
-      <div class="hero__canvas hero__canvas--abstract-1"></div>
+  <div class="hero__inner">
+    <div class="hero__content">
+      <span class="hero__eyebrow">
+        <span class="hero__eyebrow-rule"></span>
+        Artwork Inventory &amp; Exhibit Management
+      </span>
+
+      <h1 class="hero__title">
+        Where Art Meets<br>
+        <span class="hero__title-accent">Precision</span>
+      </h1>
+
+      <p class="hero__subtitle">
+        Track every piece. Curate every exhibit. Know your revenue —
+        with the composure a serious collection deserves.
+      </p>
+
+      <div class="hero__actions">
+        <a routerLink="/artworks" class="hero__btn hero__btn--primary">
+          <span>Explore Collection</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <a routerLink="/exhibits" class="hero__btn hero__btn--ghost">
+          <span>View Exhibits</span>
+        </a>
+      </div>
+
+      <dl class="hero__stats">
+        <div class="stat">
+          <dt class="stat__value">{{ artworkCount() ?? '—' }}</dt>
+          <dd class="stat__label">Artworks in Collection</dd>
+        </div>
+        <div class="stat">
+          <dt class="stat__value">{{ exhibitCount() ?? '—' }}</dt>
+          <dd class="stat__label">Curated Exhibits</dd>
+        </div>
+        <div class="stat">
+          <dt class="stat__value">3</dt>
+          <dd class="stat__label">Lifecycle States</dd>
+        </div>
+      </dl>
     </div>
-    <div class="hero__frame hero__frame--2">
-      <div class="hero__canvas hero__canvas--abstract-2"></div>
-    </div>
-    <div class="hero__frame hero__frame--3">
-      <div class="hero__canvas hero__canvas--abstract-3"></div>
+
+    <div class="hero__art" aria-hidden="true">
+      <div class="hero__frame hero__frame--lead">
+        <div class="hero__canvas hero__canvas--abstract-1"></div>
+        <span class="hero__plate">
+          <span class="hero__plate-title">Composition No. 1</span>
+          <span class="hero__plate-meta">Oil on canvas</span>
+        </span>
+      </div>
+      <div class="hero__frame hero__frame--top">
+        <div class="hero__canvas hero__canvas--abstract-2"></div>
+      </div>
+      <div class="hero__frame hero__frame--bottom">
+        <div class="hero__canvas hero__canvas--abstract-3"></div>
+      </div>
     </div>
   </div>
 
-  <div class="hero__content">
-    <span class="hero__eyebrow">
-      <span class="hero__eyebrow-rule"></span>
-      Artwork Inventory &amp; Exhibit Management
-    </span>
-    <h1 class="hero__title">
-      Where Art Meets<br>
-      <span class="hero__title-accent">Precision</span>
-    </h1>
-    <p class="hero__subtitle">
-      Track every piece. Curate every exhibit. Know your revenue —
-      with the composure a serious collection deserves.
-    </p>
-    <div class="hero__actions">
-      <a routerLink="/artworks" class="hero__btn hero__btn--primary">
-        <span>Explore Collection</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-      </a>
-      <a routerLink="/exhibits" class="hero__btn hero__btn--ghost">View Exhibits</a>
-    </div>
-  </div>
-
-  <div class="hero__scroll-hint" aria-hidden="true">
-    <span>Scroll</span>
-    <div class="hero__scroll-line"></div>
-  </div>
+  <a class="hero__scroll" href="#capabilities" aria-label="Scroll to capabilities">
+    <span>Explore</span>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+  </a>
 </section>
 
 <!-- ═══ FEATURES ═══ -->
-<section class="features">
+<section class="features" id="capabilities">
   <div class="features__container">
     <div class="features__header" appScrollReveal>
       <span class="eyebrow">Capabilities</span>
