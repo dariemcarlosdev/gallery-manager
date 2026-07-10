@@ -19,6 +19,13 @@ export class ExhibitService {
       .pipe(map(res => res.data));
   }
 
+  /** Returns the total exhibit count from the paged envelope. */
+  getCount(): Observable<number> {
+    return this.http
+      .get<PagedResponse<Exhibit>>(this.baseUrl)
+      .pipe(map(res => res.totalCount));
+  }
+
   /** Assigns an artwork to an exhibit. */
   assignArtwork(exhibitId: number, artworkId: number): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/${exhibitId}/artworks/${artworkId}`, {});

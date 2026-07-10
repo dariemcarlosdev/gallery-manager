@@ -1,7 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, PLATFORM_ID, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { catchError, of } from 'rxjs';
 import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.directive';
+import { ArtworkService } from '../../services/artwork.service';
+import { ExhibitService } from '../../services/exhibit.service';
 
 @Component({
   selector: 'app-landing-page',
@@ -11,15 +14,25 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss'
 })
-/** Marketing landing page with a scroll-driven hero parallax. */
+/** Marketing landing page: hero with live collection stats and a scroll-driven parallax. */
 export class LandingPageComponent implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
+  private artworks = inject(ArtworkService);
+  private exhibits = inject(ExhibitService);
+
   private hero: HTMLElement | null = null;
   private rafId: number | null = null;
   private scrollHandler?: () => void;
 
-  /** Wires a rAF-throttled scroll listener that feeds --scroll-y to the hero. */
+  /** Live totals shown as hero stat badges; null while loading or on error. */
+  readonly artworkCount = signal<number | null>(null);
+  readonly exhibitCount = signal<number | null>(null);
+
+  /** Fetches hero stats and wires a rAF-throttled scroll listener feeding --scroll-y. */
   ngOnInit(): void {
+    this.artworks.getCount().pipe(catchError(() => of(null))).subscribe(c => this.artworkCount.set(c));
+    this.exhibits.getCount().pipe(catchError(() => of(null))).subscribe(c => this.exhibitCount.set(c));
+
     if (!isPlatformBrowser(this.platformId)) return;
 
     this.hero = document.querySelector('.hero') as HTMLElement | null;
