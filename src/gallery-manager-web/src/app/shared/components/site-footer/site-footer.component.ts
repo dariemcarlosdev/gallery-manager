@@ -10,7 +10,7 @@ import { RouterLink } from '@angular/router';
     <footer class="site-footer">
       <div class="site-footer__container">
         <a routerLink="/" class="site-footer__brand">
-          <span class="site-footer__mark">GM</span>
+          <span class="site-footer__mark" aria-hidden="true">GM</span>
           <span class="site-footer__name">Gallery Manager</span>
         </a>
 
@@ -25,7 +25,7 @@ import { RouterLink } from '@angular/router';
       </div>
 
       <div class="site-footer__base">
-        <p class="site-footer__copy">&copy; 2026 Gallery Manager · A portfolio project by Dariem Macias</p>
+        <p class="site-footer__copy">&copy; Gallery Manager · A portfolio project by Dariem Macias</p>
       </div>
     </footer>
   `,
