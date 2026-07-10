@@ -5,8 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GalleryManager.Api.Features.Artworks;
 
+/// <summary>Feature slice for GET /artworks — filtered, sorted, paginated listing.</summary>
 public static class GetArtworks
 {
+    /// <summary>Single artwork item in the paged listing.</summary>
     public record Response(
         int Id,
         string Title,
@@ -16,6 +18,7 @@ public static class GetArtworks
         string Status,
         int? ExhibitId);
 
+    /// <summary>Whitelist of client-sortable fields mapped to their key selectors (guards against arbitrary sort input).</summary>
     private static readonly Dictionary<string, Expression<Func<Artwork, object>>> SortableFields = new(StringComparer.OrdinalIgnoreCase)
     {
         ["title"] = a => a.Title,
@@ -24,6 +27,11 @@ public static class GetArtworks
         ["createdAtUtc"] = a => a.CreatedAtUtc
     };
 
+    /// <summary>
+    /// Registers the GET /artworks endpoint. Supports optional filtering by status, artist,
+    /// and medium; sorting via the <see cref="SortableFields"/> whitelist (default: newest first);
+    /// and pagination. Response is output-cached for a short window.
+    /// </summary>
     public static void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("/artworks", async (

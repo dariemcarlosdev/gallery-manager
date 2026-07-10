@@ -6,8 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GalleryManager.Api.Features.Exhibits;
 
+/// <summary>Feature slice for GET /exhibits — listing with per-status artwork counts.</summary>
 public static class GetExhibits
 {
+    /// <summary>Exhibit item plus rolled-up counts of its artworks by status.</summary>
     public record Response(
         int Id,
         string Name,
@@ -18,6 +20,7 @@ public static class GetExhibits
         int OnLoanCount,
         int SoldCount);
 
+    /// <summary>Whitelist of client-sortable fields mapped to their key selectors.</summary>
     private static readonly Dictionary<string, Expression<Func<Exhibit, object>>> SortableFields = new(StringComparer.OrdinalIgnoreCase)
     {
         ["name"] = e => e.Name,
@@ -25,6 +28,10 @@ public static class GetExhibits
         ["endDate"] = e => e.EndDate
     };
 
+    /// <summary>
+    /// Registers the GET /exhibits endpoint. Supports optional name filter, whitelisted sorting
+    /// (default: by start date), and pagination; projects per-status artwork counts. Output-cached briefly.
+    /// </summary>
     public static void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapGet("/exhibits", async (

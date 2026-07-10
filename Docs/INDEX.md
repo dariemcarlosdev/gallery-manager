@@ -8,6 +8,7 @@
 | [api-reference.md](api-reference.md) | Every HTTP endpoint — method, route, request/response, validation |
 | [rest-api-best-practices.md](rest-api-best-practices.md) | 8 REST best practices — pagination, sorting, filtering, idempotency, versioning, RFC 7807, rate limiting, OpenAPI |
 | [frontend-backend-flow.md](frontend-backend-flow.md) | End-to-end request flow from Angular UI → API → PostgreSQL (worked example: GetArtworks) |
+| [feature-development-pattern.md](feature-development-pattern.md) | **The rule for adding any feature** — SDD gate + 5-layer playbook (FE→DB) + reusable template any LLM must follow |
 | [data-access.md](data-access.md) | EF Core model, Postgres schema, the raw-SQL revenue function |
 | [features/artwork-inventory.md](features/artwork-inventory.md) | Artwork inventory app feature — entity, endpoints, business rules |
 | [features/exhibit-management.md](features/exhibit-management.md) | Exhibit management app feature — entity, endpoints, business rules |

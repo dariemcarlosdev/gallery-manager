@@ -11,9 +11,11 @@ import { routeFade } from './shared/animations';
   styleUrl: './app.component.scss',
   animations: [routeFade]
 })
+/** Root shell: nav chrome plus the routed outlet with fade transitions. */
 export class AppComponent {
   private router = inject(Router);
 
+  /** True when the landing route ('/') is active — used to swap nav chrome. */
   get isLanding(): boolean {
     return this.router.isActive('/', {
       paths: 'exact',
@@ -23,6 +25,7 @@ export class AppComponent {
     });
   }
 
+  /** Returns the active route's path, keying the outlet animation per route. */
   outletState(outlet: RouterOutlet): string {
     return outlet.isActivated ? outlet.activatedRoute.routeConfig?.path ?? '' : '';
   }

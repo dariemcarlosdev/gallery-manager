@@ -3,10 +3,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GalleryManager.Api.Features.Artworks;
 
+/// <summary>Feature slice for PATCH /artworks/{id}/status — transitions an artwork's status.</summary>
 public static class UpdateArtworkStatus
 {
+    /// <summary>New status name plus an optional exhibit id (applied only when moving to OnLoan).</summary>
     public record Request(string Status, int? ExhibitId);
 
+    /// <summary>
+    /// Registers the PATCH /artworks/{id}/status endpoint. Validates the status name, returns 404
+    /// if the artwork is missing, and sets <see cref="Artwork.ExhibitId"/> only when transitioning to OnLoan.
+    /// </summary>
     public static void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPatch("/artworks/{id:int}/status", async (

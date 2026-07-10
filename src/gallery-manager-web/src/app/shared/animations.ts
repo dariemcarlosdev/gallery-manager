@@ -8,8 +8,10 @@ import {
   trigger
 } from '@angular/animations';
 
+/** Shared easing curve for all triggers. */
 const EASE_PREMIUM = 'cubic-bezier(0.22, 1, 0.36, 1)';
 
+/** Fade + slide on route change. */
 export const routeFade = trigger('routeFade', [
   transition('* <=> *', [
     style({ opacity: 0, transform: 'translateY(8px)' }),
@@ -17,12 +19,14 @@ export const routeFade = trigger('routeFade', [
   ])
 ]);
 
+/** Staggers child @listItem enter animations across a list. */
 export const listStagger = trigger('listStagger', [
   transition('* <=> *', [
     query('@listItem', [stagger(60, animateChild())], { optional: true })
   ])
 ]);
 
+/** Per-item enter animation (fade + rise + scale). */
 export const listItem = trigger('listItem', [
   transition(':enter', [
     style({ opacity: 0, transform: 'translateY(12px) scale(0.98)' }),
@@ -30,6 +34,7 @@ export const listItem = trigger('listItem', [
   ])
 ]);
 
+/** Enter/leave reveal for panels (forms, revenue box). */
 export const panelReveal = trigger('panelReveal', [
   transition(':enter', [
     style({ opacity: 0, transform: 'translateY(-6px) scale(0.99)' }),
@@ -40,6 +45,7 @@ export const panelReveal = trigger('panelReveal', [
   ])
 ]);
 
+/** Simple fade-in on enter. */
 export const fadeIn = trigger('fadeIn', [
   transition(':enter', [
     style({ opacity: 0 }),

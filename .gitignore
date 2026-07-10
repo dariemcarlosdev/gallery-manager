@@ -25,3 +25,14 @@ dist/
 ## OS
 .DS_Store
 Thumbs.db
+/CLAUDE.md
+/AGENTS.md
+/.windsurf/rules/caveman.md
+/.opencode/AGENTS.md
+/.github/copilot-instructions.md
+/.cursor/rules/caveman.mdc
+/.clinerules/caveman.md
+/Docs/sdd-framework/CUSTOMIZE-CLAUDE-MD-TEMPLATE.md
+/Docs/sdd-framework/README-SDD-FRAMEWORK.md
+/Docs/sdd-framework/SDD-FRAMEWORK-GUIDE.md
+/Docs/sdd-framework/SDD-QUICK-REFERENCE.md

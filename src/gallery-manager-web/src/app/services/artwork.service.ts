@@ -11,12 +11,14 @@ import {
 } from '../models/artwork.model';
 import { PagedResponse } from '../models/paged-response.model';
 
+/** HTTP client for the artworks API. */
 @Injectable({ providedIn: 'root' })
 export class ArtworkService {
   private readonly baseUrl = `${environment.apiUrl}/artworks`;
 
   constructor(private readonly http: HttpClient) {}
 
+  /** Lists artworks, optionally filtered by status; unwraps the paged envelope. */
   getArtworks(status?: ArtworkStatus): Observable<Artwork[]> {
     const params: Record<string, string> = {};
     if (status) params['status'] = status;
@@ -25,10 +27,12 @@ export class ArtworkService {
       .pipe(map(res => res.data));
   }
 
+  /** Creates an artwork. */
   createArtwork(request: CreateArtworkRequest): Observable<CreateArtworkResponse> {
     return this.http.post<CreateArtworkResponse>(this.baseUrl, request);
   }
 
+  /** Updates an artwork's status. */
   updateStatus(id: number, request: UpdateArtworkStatusRequest): Observable<void> {
     return this.http.patch<void>(`${this.baseUrl}/${id}/status`, request);
   }

@@ -74,6 +74,8 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
     }
   `]
 })
+/** Framed card wrapper with hover corners; projects content via ng-content. */
 export class GalleryCardComponent {
+  /** Highlights the accent border when true. */
   active = input(false);
 }

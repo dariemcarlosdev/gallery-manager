@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 
+/** Route table: lazy-loaded landing, artworks, exhibits pages; unknown paths redirect home. */
 export const routes: Routes = [
   {
     path: '',

@@ -4,8 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GalleryManager.Api.Features.Exhibits;
 
+/// <summary>Feature slice for POST /exhibits/{exhibitId}/artworks/{artworkId} — links an artwork to an exhibit.</summary>
 public static class AssignArtworkToExhibit
 {
+    /// <summary>
+    /// Registers the assign endpoint. Returns 404 if either the exhibit or artwork is missing,
+    /// is a no-op (204) when the artwork is already assigned, otherwise sets the FK and returns 204.
+    /// </summary>
     public static void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("/exhibits/{exhibitId:int}/artworks/{artworkId:int}", async (

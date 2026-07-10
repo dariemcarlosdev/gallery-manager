@@ -13,14 +13,18 @@ import { isPlatformBrowser } from '@angular/common';
   selector: '[appScrollReveal]',
   standalone: true
 })
+/** Reveals the host element (fade + slide) once it scrolls into view. Browser-only. */
 export class ScrollRevealDirective implements OnInit, OnDestroy {
+  /** Delay before the reveal animation, in ms. */
   @Input() revealDelay = 0;
+  /** Slide-in direction for the reveal. */
   @Input() revealDirection: 'up' | 'left' | 'right' | 'none' = 'up';
 
   private observer?: IntersectionObserver;
   private el = inject(ElementRef);
   private platformId = inject(PLATFORM_ID);
 
+  /** Sets the hidden start state and observes the element for intersection. */
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
 
@@ -55,6 +59,7 @@ export class ScrollRevealDirective implements OnInit, OnDestroy {
     this.observer.observe(nativeEl);
   }
 
+  /** Stops observing to avoid leaks. */
   ngOnDestroy(): void {
     this.observer?.disconnect();
   }

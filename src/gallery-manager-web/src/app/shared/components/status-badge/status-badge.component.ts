@@ -32,6 +32,8 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
     }
   `]
 })
+/** Colored pill showing an artwork status; color keyed off the status text. */
 export class StatusBadgeComponent {
+  /** Status label to render (drives the color via data-status). */
   status = input.required<string>();
 }

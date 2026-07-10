@@ -16,6 +16,7 @@ import { GalleryCardComponent } from '../../shared/components/gallery-card/galle
   styleUrl: './exhibits-page.component.scss',
   animations: [listStagger, listItem, panelReveal]
 })
+/** Exhibits page: lists exhibits, assigns artworks, and shows revenue. */
 export class ExhibitsPageComponent {
   private readonly exhibitService = inject(ExhibitService);
   private readonly destroyRef = inject(DestroyRef);
@@ -35,6 +36,7 @@ export class ExhibitsPageComponent {
     this.load();
   }
 
+  /** Loads all exhibits. */
   load(): void {
     this.loading.set(true);
     this.error.set(null);
@@ -53,15 +55,18 @@ export class ExhibitsPageComponent {
       });
   }
 
+  /** Pending artwork id entered for assignment to an exhibit. */
   artworkIdFor(exhibitId: number): number | null {
     return this.assignArtworkIdByExhibit()[exhibitId] ?? null;
   }
 
+  /** Records the artwork id typed for an exhibit. */
   onArtworkIdChange(exhibitId: number, value: string): void {
     const parsed = value ? Number(value) : null;
     this.assignArtworkIdByExhibit.update((map) => ({ ...map, [exhibitId]: parsed }));
   }
 
+  /** Assigns the entered artwork to the exhibit, then reloads. */
   onAssign(exhibit: Exhibit): void {
     const artworkId = this.artworkIdFor(exhibit.id);
     if (!artworkId) {
@@ -85,6 +90,7 @@ export class ExhibitsPageComponent {
       });
   }
 
+  /** Loads and shows the revenue breakdown for an exhibit. */
   onViewRevenue(exhibit: Exhibit): void {
     this.activeExhibitId.set(exhibit.id);
     this.revenue.set(null);

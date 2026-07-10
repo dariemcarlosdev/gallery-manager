@@ -11,12 +11,14 @@ import { ScrollRevealDirective } from '../../shared/directives/scroll-reveal.dir
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss'
 })
+/** Marketing landing page with a scroll-driven hero parallax. */
 export class LandingPageComponent implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private hero: HTMLElement | null = null;
   private rafId: number | null = null;
   private scrollHandler?: () => void;
 
+  /** Wires a rAF-throttled scroll listener that feeds --scroll-y to the hero. */
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
 
@@ -35,6 +37,7 @@ export class LandingPageComponent implements OnInit, OnDestroy {
     window.addEventListener('scroll', this.scrollHandler, { passive: true });
   }
 
+  /** Removes the scroll listener and cancels any pending frame. */
   ngOnDestroy(): void {
     if (this.scrollHandler) {
       window.removeEventListener('scroll', this.scrollHandler);

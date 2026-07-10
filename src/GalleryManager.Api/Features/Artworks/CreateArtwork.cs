@@ -4,14 +4,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GalleryManager.Api.Features.Artworks;
 
+/// <summary>Feature slice for POST /artworks — creates an artwork with idempotency support.</summary>
 public static class CreateArtwork
 {
+    /// <summary>Incoming payload describing the artwork to create.</summary>
     public record Request(string Title, string Artist, string Medium, decimal Price);
 
+    /// <summary>Created artwork returned to the caller.</summary>
     public record Response(int Id, string Title, string Artist, string Medium, decimal Price, string Status);
 
+    /// <summary>FluentValidation rules enforcing required fields, lengths, and non-negative price.</summary>
     public class Validator : AbstractValidator<Request>
     {
+        /// <summary>Configures the validation rules for a <see cref="Request"/>.</summary>
         public Validator()
         {
             RuleFor(x => x.Title).NotEmpty().MaximumLength(200);
@@ -21,6 +26,11 @@ public static class CreateArtwork
         }
     }
 
+    /// <summary>
+    /// Registers the POST /artworks endpoint. Honors an optional <c>Idempotency-Key</c> header:
+    /// a repeated key returns the original artwork (200) instead of creating a duplicate,
+    /// including under a race via a unique-index conflict fallback.
+    /// </summary>
     public static void MapEndpoint(IEndpointRouteBuilder app)
     {
         app.MapPost("/artworks", async (
