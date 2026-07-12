@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>gallery-manager-api-secrets</UserSecretsId>
+    <!-- Skip apphost .exe: corp AV/Defender blocks self-built exe. Launch via `dotnet Api.dll`. -->
+    <UseAppHost>false</UseAppHost>
   </PropertyGroup>
 
   <ItemGroup>

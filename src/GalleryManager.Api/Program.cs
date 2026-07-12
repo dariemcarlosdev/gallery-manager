@@ -18,7 +18,8 @@ if (port is not null)
 
 // EF Core context backed by PostgreSQL (Npgsql), connection string "GalleryDb".
 builder.Services.AddDbContext<GalleryDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("GalleryDb")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("GalleryDb" +
+    "")));
 
 // Standardized RFC 7807 problem-details responses for errors.
 builder.Services.AddProblemDetails();
@@ -62,7 +63,9 @@ builder.Services.AddOutputCache(options =>
 
 // Minimal-API endpoint discovery + Swagger/OpenAPI generation (UI enabled in Development only).
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// Vertical slices reuse nested type names (e.g. Response) across features;
+// qualify schemaIds by declaring type to avoid Swashbuckle collisions.
+builder.Services.AddSwaggerGen(c => c.CustomSchemaIds(t => t.FullName?.Replace("+", ".")));
 
 // CORS policy allowing the Angular front-end (local dev ports + the configured Vercel URL).
 const string AngularDevCors = "AngularDev";
