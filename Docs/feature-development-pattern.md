@@ -91,6 +91,64 @@ State + render:     <signals held, what the template shows>
 
 ---
 
+## Worked Example — "Featured Artwork" flag
+
+A minimal proof of concept that exercises all five layers. Filled template below; each layer names the exact file to mirror.
+
+```
+## Feature: Featured Artwork flag
+Route:              GET /api/v1/artworks/featured
+Domain:             Artworks
+
+# Phase 0 — SDD Gate
+Assumptions:        1. Artwork is the aggregate; a bool flag is enough (no separate entity).
+                    2. "Featured" is curator-set; no auth needed for this read POC.
+                    3. Default IsFeatured = false for existing rows.
+                    4. Endpoint returns the same PagedResponse<ArtworkResponse> shape as GetArtworks.
+                    5. FE shows a badge; no new page.
+Simplicity check:   One nullable-free bool column + one filtered read. No new entity, no join. Minimum for a 2-entity POC.
+Files to create:    Features/Artworks/GetFeaturedArtworks.cs
+Files to modify:    Features/Artworks/Artwork.cs · Data/GalleryDbContext.cs · Program.cs ·
+                    services/artwork.service.ts · models/artwork.model.ts · pages/artworks-page/artworks-page.component.(ts|html)
+Acceptance criteria:- GET /api/v1/artworks/featured returns 200 with PagedResponse<ArtworkResponse>, only IsFeatured == true rows.
+                    - Swagger lists the endpoint.
+                    - Artworks page renders a "Featured" badge on flagged cards from live data.
+
+# Layer 1 — Database
+Entity change:      Add bool IsFeatured to Artwork
+Migration name:     AddArtworkIsFeatured
+Raw SQL:            none
+
+# Layer 2 — API endpoint (mirror Features/Artworks/GetArtworks.cs)
+Request record:     paging params (page, pageSize) — same as GetArtworks
+Response record:    reuse ArtworkResponse (already has the fields) + IsFeatured
+Validator rules:    page >= 1; pageSize 1..100 (copy GetArtworks validator)
+Result codes:       200 (empty list allowed) · 400 (bad paging)
+
+# Layer 3 — Composition
+Register in Program.cs: GetFeaturedArtworks.MapEndpoint(app)  ✔ (in the /api/v1 group)
+
+# Layer 4 — FE service + model
+Model:              models/artwork.model.ts — add isFeatured: boolean
+Service method:     services/artwork.service.ts → getFeatured() — unwrap PagedResponse to Artwork[]
+
+# Layer 5 — FE page
+Component:          pages/artworks-page/artworks-page.component.ts
+State + render:     hold artworks signal; template shows a "Featured" badge when artwork.isFeatured
+
+# Verify: run the checklist below.
+```
+
+| Layer | Mirror this file | One-line note |
+|---|---|---|
+| 1 DB | `Features/Artworks/Artwork.cs`, `Data/GalleryDbContext.cs` | Add the property; configure default `false` in `OnModelCreating`; scaffold `AddArtworkIsFeatured`. |
+| 2 API | `Features/Artworks/GetArtworks.cs` | Copy the slice; add `.Where(a => a.IsFeatured)` before paging. |
+| 3 Compose | `Program.cs` | One line in the versioned group — nothing else. |
+| 4 FE service | `services/artwork.service.ts`, `models/artwork.model.ts` | Add `isFeatured` to model; `getFeatured()` hits `/api/v1/artworks/featured`, unwraps `PagedResponse`. |
+| 5 FE page | `pages/artworks-page/artworks-page.component.ts` | Signal + badge in template; no HTTP in the component. |
+
+---
+
 ## Verification & Completion Checklist
 
 A feature is **not done** until every box is checked (Goal-driven principle).
@@ -114,4 +172,5 @@ Before adding anything not covered above, re-read [Scope & Non-Goals](INDEX.md#s
 ---
 
 ## Last synced
+2026-07-12 — added "Featured Artwork" worked example (all 5 layers).
 2026-07-09 — aligned with `frontend-backend-flow.md` (5-layer flow) and SDD framework v1.1.
