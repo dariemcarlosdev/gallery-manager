@@ -45,17 +45,23 @@
 
     <div class="hero__art" aria-hidden="true">
       <div class="hero__frame hero__frame--lead">
-        <div class="hero__canvas hero__canvas--abstract-1"></div>
+        <div class="hero__canvas">
+          <img [src]="heroArtworks[0].url" [alt]="heroArtworks[0].alt" loading="lazy">
+        </div>
         <span class="hero__plate">
-          <span class="hero__plate-title">Composition No. 1</span>
-          <span class="hero__plate-meta">Oil on canvas</span>
+          <span class="hero__plate-title">{{ heroArtworks[0].title }}</span>
+          <span class="hero__plate-meta">{{ heroArtworks[0].meta }}</span>
         </span>
       </div>
       <div class="hero__frame hero__frame--top">
-        <div class="hero__canvas hero__canvas--abstract-2"></div>
+        <div class="hero__canvas">
+          <img [src]="heroArtworks[1].url" [alt]="heroArtworks[1].alt" loading="lazy">
+        </div>
       </div>
       <div class="hero__frame hero__frame--bottom">
-        <div class="hero__canvas hero__canvas--abstract-3"></div>
+        <div class="hero__canvas">
+          <img [src]="heroArtworks[2].url" [alt]="heroArtworks[2].alt" loading="lazy">
+        </div>
       </div>
     </div>
   </div>
