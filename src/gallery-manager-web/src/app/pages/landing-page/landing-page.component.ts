@@ -28,6 +28,13 @@ export class LandingPageComponent implements OnInit, OnDestroy {
   readonly artworkCount = signal<number | null>(null);
   readonly exhibitCount = signal<number | null>(null);
 
+  /** Hero collage images — free Unsplash abstract-painting photos, no named-artist attribution. */
+  readonly heroArtworks = [
+    { url: 'https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?auto=format&fit=crop&w=900&q=80', alt: 'Abstract painting in red, blue and yellow', title: 'Untitled Study', meta: 'Mixed media' },
+    { url: 'https://images.unsplash.com/flagged/photo-1567934150921-7632371abb32?auto=format&fit=crop&w=900&q=80', alt: 'Abstract painting in orange, white and teal' },
+    { url: 'https://images.unsplash.com/photo-1541512416146-3cf58d6b27cc?auto=format&fit=crop&w=900&q=80', alt: 'Multicolored abstract painting' }
+  ];
+
   /** Fetches hero stats and wires a rAF-throttled scroll listener feeding --scroll-y. */
   ngOnInit(): void {
     this.artworks.getCount().pipe(catchError(() => of(null))).subscribe(c => this.artworkCount.set(c));
